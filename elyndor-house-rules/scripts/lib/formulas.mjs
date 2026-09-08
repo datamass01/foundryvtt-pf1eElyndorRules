@@ -1,15 +1,16 @@
 /**
  * Shared math helpers that re-derive pf1's own class-level formulas
  * (module/models/item/class-model.mjs in the pf1 source) at an arbitrary
- * level, so the house rules can compute "what this class's base save/BAB
+ * level, so the house rules can compute "what this class's base save
  * would be at a different level" without touching pf1 source.
  *
  * IMPORTANT: these intentionally mirror
  * RefCode/module/models/item/class-model.mjs:300-357 exactly (same config
  * tables, same rollData shape) so the recomputed value is *directly*
  * comparable to the class item's own already-computed
- * `system.savingThrows[id].base` / `system.babBase` — see
- * changes/saves-bab-lag.mjs for how the diff is used.
+ * `system.savingThrows[id].base` — see changes/saves-bab-lag.mjs for how
+ * the save-lag diff is used. Secondary BAB is not recomputed here: it is
+ * zeroed at the source (`registerSecondaryBabSuppression`).
  */
 
 /**
