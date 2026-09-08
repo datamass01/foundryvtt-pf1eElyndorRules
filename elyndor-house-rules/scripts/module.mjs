@@ -15,11 +15,13 @@ import { applyFeatCountChange } from "./changes/feats.mjs";
 import { applySkillPointsChange } from "./changes/skill-points-total.mjs";
 import { applyMovementChanges } from "./changes/movement.mjs";
 import { registerClassRoleToggle } from "./ui/class-role-toggle.mjs";
+import { registerClassRoleColumn } from "./ui/class-role-column.mjs";
 import { registerSkillPoolPanel } from "./ui/skill-pool-panel.mjs";
 
 Hooks.once("init", () => {
   registerSettings();
   registerClassRoleToggle();
+  registerClassRoleColumn();
   registerSkillPoolPanel();
 });
 
