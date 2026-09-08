@@ -3,45 +3,43 @@ _key: '!items!eLyDwarfRace001a'
 img: systems/pf1/icons/races/dwarf.png
 name: Dwarf (Elyndor)
 system:
+  # pf1 v11.11: changeFlags is a boolean map; changes/contextNotes are arrays.
+  # The RefCode SetField/TypedObjectField shape is a silent no-op on drop.
   changeFlags:
-    - noMediumEncumbrance
-    - noHeavyEncumbrance
-    - mediumArmorFullSpeed
-    - heavyArmorFullSpeed
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: true
+    noHeavyEncumbrance: true
+    mediumArmorFullSpeed: true
+    heavyArmorFullSpeed: true
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
   changes:
-    eLyDwarfWis001:
-      _id: eLyDwarfWis001
+    - _id: eLyDwarfWis001
       formula: '2'
       target: wis
       type: racial
-    eLyDwarfCon001:
-      _id: eLyDwarfCon001
+    - _id: eLyDwarfCon001
       formula: '2'
       target: con
       type: racial
-    eLyDwarfCha001:
-      _id: eLyDwarfCha001
+    - _id: eLyDwarfCha001
       formula: '-2'
       target: cha
       type: racial
   contextNotes:
-    eLyDwarfCmd001:
-      target: cmd
+    - target: cmd
       text: +[[4]] Racial vs Bull Rush and Trip while on ground
-    eLyDwarfPer001:
-      target: skill.per
+    - target: skill.per
       text: +[[2]] to Notice Unusual Stonework
-    eLyDwarfAc001:
-      target: ac
+    - target: ac
       text: +[[4]] Dodge vs Giants
-    eLyDwarfSave001:
-      target: allSavingThrows
+    - target: allSavingThrows
       text: +[[2]] Racial vs Poisons, Spells and Spell-likes
-    eLyDwarfApr001:
-      target: skill.apr
+    - target: skill.apr
       text: +[[2]] Racial to Appraise Items with Gems
-    eLyDwarfAtk001:
-      target: attack
+    - target: attack
       text: +[[1]] Racial vs Humanoids (Orc, Goblinoid)
   creatureSubtypes:
     - dwarf

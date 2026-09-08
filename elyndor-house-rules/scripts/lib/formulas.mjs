@@ -9,8 +9,9 @@
  * tables, same rollData shape) so the recomputed value is *directly*
  * comparable to the class item's own already-computed
  * `system.savingThrows[id].base` — see changes/saves-bab-lag.mjs for how
- * the save-lag diff is used. Secondary BAB is not recomputed here: it is
- * zeroed at the source (`registerSecondaryBabSuppression`).
+ * Primary vs lagged-Secondary bases are compared. Secondary BAB is not
+ * recomputed here: it is zeroed at the source
+ * (`registerSecondaryBabSuppression`).
  */
 
 /**
@@ -18,10 +19,9 @@
  * level (instead of its own current level), using the same formula table
  * pf1 itself used to compute `classItem.system.savingThrows[saveId].base`.
  *
- * Returns `null` if the class uses a "custom" save formula for this save,
- * since a custom formula is the item author's own responsibility and pf1
- * doesn't publish a reusable table for it — callers should treat `null` as
- * "no lag adjustment possible, leave the core-computed value as-is."
+ * Returns `null` if the class has no save type for this save (callers
+ * should then leave the stored base as-is). Custom formulas are evaluated
+ * at `level` the same way pf1 evaluates them at the class's own level.
  *
  * @param {pf1.documents.ItemPF} classItem
  * @param {"fort"|"ref"|"will"} saveId
@@ -41,10 +41,15 @@ export function recomputeClassSaveAtLevel(classItem, saveId, level) {
   const classType = classItem.system.subType || "base";
   const saveData = classItem.system.savingThrows?.[saveId];
   const saveType = saveData?.value;
-  if (!saveType || saveType === "custom") return null;
+  if (!saveType) return null;
 
-  const formula = saveFormulas?.[classType]?.[saveType];
-  if (formula == null) return 0;
+  let formula;
+  if (saveType === "custom") {
+    formula = saveData.custom || "0";
+  } else {
+    formula = saveFormulas?.[classType]?.[saveType];
+    if (formula == null) return 0;
+  }
 
   // pf1's own class-model computation uses hitDice === level for classes
   // without an alternate HD progression (the normal case for every class
@@ -53,38 +58,28 @@ export function recomputeClassSaveAtLevel(classItem, saveId, level) {
 }
 
 /**
- * The delta to push as an additive Change so that the TOTAL base save
- * contributed by the Primary+Secondary pair ends up equal to
- * `max(primary.base, secondary.base @ laggedLevel)`, per Docs/house-rules
- * §3.1 — NOT their sum.
- *
- * pf1's own multiclass aggregation *sums* every class's base save
- * (`base-character-model.mjs:1690-1745` pushes one additive Change per
- * class), so by the time this fires, pf1 has already contributed
- * `primary.base + secondary.base` (both at their real, lockstep level).
- * Since `pf1.change.defaults` can only add Changes, not remove pf1's own,
- * the delta needed is:
- *
- *   desired = max(primary.base, secondary.base @ laggedLevel)
- *   core    = primary.base + secondary.base   (both at real level)
- *   delta   = desired - core
- *
- * which correctly cancels the sum down to the max regardless of which side
- * is larger.
+ * Compare Primary's already-computed base save against Secondary's table
+ * at the lagged level. Highest wins; Primary wins a tie. Used by
+ * `changes/saves-bab-lag.mjs` to keep only that class's contribution
+ * instead of summing both and cancelling.
  *
  * @param {pf1.documents.ItemPF} primary
  * @param {pf1.documents.ItemPF} secondary
  * @param {"fort"|"ref"|"will"} saveId
  * @param {number} laggedLevel - Secondary's lagged level (see class-roles.mjs).
+ * @returns {{ primaryBase: number, secondaryLagged: number, winner: "primary"|"secondary", value: number }}
  */
-export function maxSaveDelta(primary, secondary, saveId, laggedLevel) {
-  const primaryBase = primary.system.savingThrows?.[saveId]?.base ?? 0;
-  const secondaryBase = secondary.system.savingThrows?.[saveId]?.base ?? 0;
-  const secondaryLagged = recomputeClassSaveAtLevel(secondary, saveId, laggedLevel) ?? secondaryBase;
-
-  const desired = Math.max(primaryBase, secondaryLagged);
-  const core = primaryBase + secondaryBase;
-  return desired - core;
+export function compareDualClassSave(primary, secondary, saveId, laggedLevel) {
+  const primaryBase = Number(primary.system.savingThrows?.[saveId]?.base) || 0;
+  const secondaryStored = Number(secondary.system.savingThrows?.[saveId]?.base) || 0;
+  const secondaryLagged = recomputeClassSaveAtLevel(secondary, saveId, laggedLevel) ?? secondaryStored;
+  const secondaryWins = secondaryLagged > primaryBase;
+  return {
+    primaryBase,
+    secondaryLagged,
+    winner: secondaryWins ? "secondary" : "primary",
+    value: secondaryWins ? secondaryLagged : primaryBase,
+  };
 }
 
 /* -------------------------------------------- */

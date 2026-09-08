@@ -3,41 +3,51 @@ _key: '!items!eLyLythariRace1a'
 img: systems/pf1/icons/races/creature-types/fey.png
 name: Lythari
 system:
+  # pf1 v11.11 stores these as arrays (and changeFlags as a boolean map).
+  # RefCode's later TypedObjectField/SetField shape is rejected by the
+  # installed system: Item preparation does `for...of` over `system.changes`,
+  # throws, and dropping the race onto a sheet is a silent no-op.
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: true
+    seeInvisibility: false
+    seeInDarkness: false
   changes:
-    eLyLythDex001:
-      _id: eLyLythDex001
+    - _id: eLyLythDex001
       formula: '2'
       target: dex
       type: racial
-    eLyLythInt001:
-      _id: eLyLythInt001
+    - _id: eLyLythInt001
       formula: '2'
       target: int
       type: racial
-    eLyLythCon001:
-      _id: eLyLythCon001
+    - _id: eLyLythCon001
       formula: '-2'
       target: con
       type: racial
-    eLyLythSav001:
-      _id: eLyLythSav001
+    - _id: eLyLythSav001
       formula: '1'
       target: allSavingThrows
       type: racial
+    - _id: eLyLythPer001
+      formula: '2'
+      target: skill.per
+      type: racial
+    - _id: eLyLythSur001
+      formula: '2'
+      target: skill.sur
+      type: racial
   contextNotes:
-    eLyLythSav002:
-      target: allSavingThrows
+    - target: allSavingThrows
       text: |-
         +[[2]] Racial vs Enchantment Effects
         Immune to Magic Sleep
-    eLyLythPer001:
-      target: skill.per
-      text: +[[2]] Racial (Keen Senses)
-    eLyLythSur001:
-      target: skill.sur
-      text: +[[2]] Racial (Keen Senses)
-    eLyLythDip001:
-      target: skill.dip
+    - target: skill.dip
       text: +[[4]] Racial to influence wolves and dire wolves (Lycanthropic Empathy)
   creatureSubtypes:
     - shapechanger
