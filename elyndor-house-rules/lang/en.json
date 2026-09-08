@@ -29,8 +29,8 @@
       "Ability": "Ability",
       "CareerAvailable": "Career Points Available",
       "RanksInMatchingSkills": "Ranks in Matching Skills",
-      "Generic": "Generic (CON + flat)",
-      "Hint": "Advisory only — pf1 doesn't track which pool paid for which rank, so this compares each ability's career total against ranks currently in skills it governs. Intimidate may draw from STR or CHA; the Generic row (CON modifier + 2/level, both unrestricted) covers any skill, including any shortfall above."
+      "Generic": "Generic (CON + flat + racial)",
+      "Hint": "Advisory only — pf1 doesn't track which pool paid for which rank, so this compares each ability's career total against ranks currently in skills it governs. Ranks past an ability's cap show as n (x): n in that pool, x overflow counted on Generic. Intimidate may draw from STR or CHA. Generic (CON + 2/level + racial, all unrestricted) covers any skill; its used count turns red if it exceeds its own cap."
     }
   }
 }

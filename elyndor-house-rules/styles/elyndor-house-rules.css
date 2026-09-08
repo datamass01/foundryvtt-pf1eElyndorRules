@@ -79,6 +79,12 @@
   font-style: italic;
 }
 
+.elyndor-skill-pools .generic-over {
+  font-weight: bold;
+  font-style: normal;
+  color: #8b0000;
+}
+
 .elyndor-skill-pools .hint {
   font-size: 0.8em;
   opacity: 0.8;
