@@ -129,25 +129,43 @@ export function totalSkillPointsPerLevel(actor) {
 }
 
 /**
- * Career-total unrestricted skill ranks granted by the actor's race item
- * (e.g. Human Skilled: `@attributes.hd.total`). Already counted by pf1 via
- * the race item's own `bonusSkillRanks` Change, so this must not be added
- * to {@link totalSkillPointsPerLevel} — that would double-count. The skill
- * pool panel adds it to Generic because those ranks may be spent on any skill.
+ * Career-total unrestricted skill ranks granted by anything OTHER than the
+ * six ability-pool formulas above: race features (e.g. Human Skilled:
+ * `@attributes.hd.total`), feats, class features, or the sheet's manual
+ * "Bonus Skill Rank Formula" field — anything that lands on the
+ * `bonusSkillRanks` Change target / `system.details.bonusSkillRankFormula`.
+ *
+ * Scans every item on the actor (not just the race), since a feat or class
+ * feature can grant `bonusSkillRanks` too — see Docs/house-rules §2.2: any
+ * such bonus is unrestricted, so the skill pool panel folds all of it into
+ * Generic rather than only the racial piece. This deliberately does NOT read
+ * the already-computed `system.details.skills.bonus` total, because that
+ * would also pick up `changes/skill-points-total.mjs`'s own reconciliation
+ * Changes (already fully accounted for across the six ability pools) and
+ * double-count them.
+ *
+ * Already counted by pf1 via each source's own `bonusSkillRanks` Change, so
+ * this must not be added to {@link totalSkillPointsPerLevel} — that would
+ * double-count.
  *
  * @param {pf1.documents.ActorPF} actor
  * @returns {number}
  */
-export function racialBonusSkillRanks(actor) {
-  const race = actor?.itemTypes?.race?.[0];
-  if (!race) return 0;
-
+export function otherBonusSkillRanks(actor) {
   const rollData = typeof actor.getRollData === "function" ? actor.getRollData() : {};
   let total = 0;
-  for (const change of Object.values(race.system.changes ?? {})) {
-    if (change.target !== "bonusSkillRanks") continue;
-    total += pf1.dice.RollPF.safeRollSync(String(change.formula ?? 0), rollData).total || 0;
+  for (const item of actor?.items ?? []) {
+    for (const change of Object.values(item.system?.changes ?? {})) {
+      if (change.target !== "bonusSkillRanks") continue;
+      total += pf1.dice.RollPF.safeRollSync(String(change.formula ?? 0), rollData).total || 0;
+    }
   }
+
+  const manualFormula = actor?.system?.details?.bonusSkillRankFormula;
+  if (manualFormula) {
+    total += pf1.dice.RollPF.safeRollSync(String(manualFormula), rollData).total || 0;
+  }
+
   return total;
 }
 

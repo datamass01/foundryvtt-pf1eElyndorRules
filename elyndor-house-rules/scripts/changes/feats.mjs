@@ -44,6 +44,16 @@ export function applyFeatCountChange(actor, changes) {
         operator: "add",
         target: "bonusFeats",
         type: "untyped",
+        // Without a `flavor`, this parentless ItemChange has no `parent.name`
+        // for the Feats-tab tooltip to fall back on (source-info.mjs) and
+        // shows as a bare "Untyped" line instead of its true source — same
+        // failure mode `saves-bab-lag.mjs` documents and works around for
+        // the save-source tooltip. Reuses pf1's own "From Levels" wording
+        // (`PF1.FromLevels` — used for its native by-HD feat count; verified
+        // live against the installed lang file, since `PF1.Sources.Levels`
+        // doesn't exist and silently renders as that literal raw key) since
+        // this delta is purely a function of character level.
+        flavor: game.i18n?.localize?.("PF1.FromLevels") ?? "Levels",
       }),
     );
   }
