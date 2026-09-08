@@ -10,7 +10,7 @@ import { MODULE_ID } from "./const.mjs";
 import { registerPointBuyTier, registerSettings } from "./settings.mjs";
 import { checkLockstep } from "./class-roles.mjs";
 import { applyCharacterLevelFix } from "./changes/character-level.mjs";
-import { applySavesAndBabChanges } from "./changes/saves-bab-lag.mjs";
+import { applySavesAndBabChanges, registerSecondaryBabSuppression } from "./changes/saves-bab-lag.mjs";
 import { applyFeatCountChange } from "./changes/feats.mjs";
 import { applySkillPointsChange } from "./changes/skill-points-total.mjs";
 import { applyMovementChanges } from "./changes/movement.mjs";
@@ -20,6 +20,7 @@ import { registerSkillPoolPanel } from "./ui/skill-pool-panel.mjs";
 
 Hooks.once("init", () => {
   registerSettings();
+  registerSecondaryBabSuppression();
   registerClassRoleToggle();
   registerClassRoleColumn();
   registerSkillPoolPanel();

@@ -60,7 +60,9 @@ export function registerDualClassTests() {
         });
 
         it("BAB comes from Fighter only", () => {
-          // Fighter (high BAB) @5 = 5; Sorcerer (low BAB) @5 would be 2 if uncancelled.
+          // Fighter (high BAB) @5 = 5; Sorcerer (low BAB) @5 would be 2 if it contributed.
+          // Secondary babBase is zeroed at the source so it awards no BAB Change.
+          expect(sorcerer.system.babBase).to.equal(0);
           expect(actor.system.attributes.bab.total).to.equal(5);
         });
 

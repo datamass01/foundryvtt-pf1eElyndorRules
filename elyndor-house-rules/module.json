@@ -2,7 +2,7 @@
   "id": "elyndor-house-rules",
   "title": "Elyndor House Rules",
   "description": "Primary/Secondary dual-class progression, custom skill-point pools, doubled save-ability modifiers, 1-feat-per-level, and class/race/movement tweaks for the Elyndor pf1 campaign.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
