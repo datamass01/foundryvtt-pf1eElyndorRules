@@ -134,6 +134,29 @@ export function totalSkillPointsPerLevel(actor) {
 }
 
 /**
+ * Career-total unrestricted skill ranks granted by the actor's race item
+ * (e.g. Human Skilled: `@attributes.hd.total`). Already counted by pf1 via
+ * the race item's own `bonusSkillRanks` Change, so this must not be added
+ * to {@link totalSkillPointsPerLevel} — that would double-count. The skill
+ * pool panel adds it to Generic because those ranks may be spent on any skill.
+ *
+ * @param {pf1.documents.ActorPF} actor
+ * @returns {number}
+ */
+export function racialBonusSkillRanks(actor) {
+  const race = actor?.itemTypes?.race?.[0];
+  if (!race) return 0;
+
+  const rollData = typeof actor.getRollData === "function" ? actor.getRollData() : {};
+  let total = 0;
+  for (const change of Object.values(race.system.changes ?? {})) {
+    if (change.target !== "bonusSkillRanks") continue;
+    total += pf1.dice.RollPF.safeRollSync(String(change.formula ?? 0), rollData).total || 0;
+  }
+  return total;
+}
+
+/**
  * pf1's own skill id for Intimidate is literally `"int"` — a different
  * namespace than (and easy to confuse with) the Intelligence ABILITY id
  * `"int"`. `pf1.config.skills.int.ability` is `"cha"` by default; this

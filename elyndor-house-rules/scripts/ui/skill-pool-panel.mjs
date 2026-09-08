@@ -13,10 +13,14 @@
  */
 import { MODULE_ID } from "../const.mjs";
 import { getPrimaryClass } from "../class-roles.mjs";
-import { skillPointPools, POOL_ABILITIES } from "../lib/formulas.mjs";
+import { skillPointPools, POOL_ABILITIES, racialBonusSkillRanks } from "../lib/formulas.mjs";
 
 const TEMPLATE_PATH = `modules/${MODULE_ID}/templates/skill-pool-panel.hbs`;
 const INJECTED_CLASS = `${MODULE_ID}-skill-pool-panel`;
+// Rank edits re-render the whole sheet, which would otherwise recreate the
+// <details> closed. Persist open/closed on the Application instance so the
+// panel stays expanded while the player is adjusting ranks.
+const OPEN_STATE = new WeakMap();
 
 export function registerSkillPoolPanel() {
   // CORRECTION (verified live): the installed v11.11 build's actual PC
@@ -48,20 +52,34 @@ async function onRenderCharacterSheet(app, html) {
 
   const perLevelPools = skillPointPools(actor);
   const genericPerLevel = perLevelPools.con + perLevelPools.flat;
+  // Racial bonus ranks (Human Skilled, etc.) are unrestricted and already
+  // career-total in the race formula; do not multiply by characterLevel.
+  const genericCareerTotal = genericPerLevel * characterLevel + racialBonusSkillRanks(actor);
 
-  const restrictedRows = POOL_ABILITIES.filter((id) => id !== "con").map((abilityId) => ({
-    abilityId,
-    // pf1.config.abilities[id] is a localization KEY (e.g. "PF1.AbilityScores.str.Label"),
-    // resolved to a display string by the template via {{localize}}.
-    label: pf1.config.abilities?.[abilityId] ?? abilityId,
-    careerTotal: perLevelPools[abilityId] * characterLevel,
-    ranksInMatchingSkills: sumRanksGovernedBy(actor, abilityId),
-  }));
+  const restrictedRows = POOL_ABILITIES.filter((id) => id !== "con").map((abilityId) => {
+    const careerTotal = perLevelPools[abilityId] * characterLevel;
+    const ranksInMatchingSkills = sumRanksGovernedBy(actor, abilityId);
+    const overflow = Math.max(0, ranksInMatchingSkills - careerTotal);
+    return {
+      abilityId,
+      // pf1.config.abilities[id] is a localization KEY (e.g. "PF1.AbilityScores.str.Label"),
+      // resolved to a display string by the template via {{localize}}.
+      label: pf1.config.abilities?.[abilityId] ?? abilityId,
+      careerTotal,
+      ranksInMatchingSkills,
+      overflow,
+      overCap: overflow > 0,
+    };
+  });
+
+  const genericUsed = restrictedRows.reduce((sum, row) => sum + row.overflow, 0);
 
   const content = await renderTemplate(TEMPLATE_PATH, {
     characterLevel,
     restrictedRows,
-    genericCareerTotal: genericPerLevel * characterLevel,
+    genericCareerTotal,
+    genericUsed,
+    genericOver: genericUsed > genericCareerTotal,
   });
 
   const wrapper = document.createElement("div");
@@ -69,6 +87,10 @@ async function onRenderCharacterSheet(app, html) {
   const section = wrapper.firstElementChild;
   if (!section) return;
   section.classList.add(INJECTED_CLASS);
+  if (OPEN_STATE.get(app)) section.open = true;
+  section.addEventListener("toggle", () => {
+    OPEN_STATE.set(app, section.open);
+  });
 
   // CORRECTION (verified live): the actual skills tab element is a
   // `<div class="tab skills ...">`, not a `<section>` as originally assumed

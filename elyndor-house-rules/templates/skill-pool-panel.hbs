@@ -13,13 +13,13 @@
       <tr>
         <td>{{localize this.label}}</td>
         <td>{{this.careerTotal}}</td>
-        <td>{{this.ranksInMatchingSkills}}</td>
+        <td>{{#if this.overCap}}{{this.careerTotal}} ({{this.overflow}}){{else}}{{this.ranksInMatchingSkills}}{{/if}}</td>
       </tr>
       {{/each}}
       <tr class="generic-row">
         <td>{{localize "ELYNDOR.SkillPools.Generic"}}</td>
         <td>{{genericCareerTotal}}</td>
-        <td>—</td>
+        <td{{#if genericOver}} class="generic-over"{{/if}}>{{genericUsed}}</td>
       </tr>
     </tbody>
   </table>
