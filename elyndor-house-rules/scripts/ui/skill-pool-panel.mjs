@@ -46,9 +46,15 @@ async function onRenderCharacterSheet(app, html) {
 
   root.querySelector(`.${INJECTED_CLASS}`)?.remove();
 
+  // Ability-score pools, not dual-class math — render even with no
+  // Primary/Secondary (a character may have only one class). Prefer
+  // Primary's level when set; otherwise the actor's HD / character level.
   const primary = getPrimaryClass(actor);
-  if (!primary) return; // Nothing meaningful to show until the dual-class structure is set up.
-  const characterLevel = primary.system.level ?? 0;
+  const characterLevel =
+    primary?.system?.level ??
+    actor.system.details?.level?.value ??
+    actor.system.attributes?.hd?.total ??
+    0;
 
   const perLevelPools = skillPointPools(actor);
   const genericPerLevel = perLevelPools.con + perLevelPools.flat;
