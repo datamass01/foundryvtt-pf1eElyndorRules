@@ -45,15 +45,18 @@ export function applyFeatCountChange(actor, changes) {
         target: "bonusFeats",
         type: "untyped",
         // Without a `flavor`, this parentless ItemChange has no `parent.name`
-        // for the Feats-tab tooltip to fall back on (source-info.mjs) and
-        // shows as a bare "Untyped" line instead of its true source — same
-        // failure mode `saves-bab-lag.mjs` documents and works around for
-        // the save-source tooltip. Reuses pf1's own "From Levels" wording
-        // (`PF1.FromLevels` — used for its native by-HD feat count; verified
-        // live against the installed lang file, since `PF1.Sources.Levels`
-        // doesn't exist and silently renders as that literal raw key) since
-        // this delta is purely a function of character level.
-        flavor: game.i18n?.localize?.("PF1.FromLevels") ?? "Levels",
+        // for the Feats-tab tooltip to fall back on (base-character-sheet.mjs's
+        // `case "feats"`) and shows as a bare "Untyped" line instead of its
+        // true source — same failure mode `saves-bab-lag.mjs` documents and
+        // works around for the save-source tooltip. That same tooltip code
+        // ALSO always pushes its own native "PF1.Sources.Levels" ("From
+        // Levels") line for pf1's own by-HD feat count (`feats.levels`,
+        // `Math.ceil(hd.total / 2)`) as a separate row — reusing that exact
+        // wording here would make this delta's row read identically to
+        // pf1's unrelated native row, so use a distinguishable Elyndor
+        // label instead even though this delta is likewise purely a
+        // function of character level.
+        flavor: game.i18n?.localize?.("ELYNDOR.FromLevels") ?? "From Levels (Elyndor)",
       }),
     );
   }
