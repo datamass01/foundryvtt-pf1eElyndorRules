@@ -1,0 +1,40 @@
+_id: eLyRunFeat0001aa
+_key: '!items!eLyRunFeat0001aa'
+img: systems/pf1/icons/feats/run.jpg
+name: Run (Elyndor)
+system:
+  changes:
+    eLyRunChange01:
+      _id: eLyRunChange01
+      formula: '5'
+      target: landSpeed
+      type: untyped
+  changeFlags: []
+  contextNotes:
+    TJupP8BOKm9NaPJJ:
+      target: skill.acr
+      text: +[[4]] to jump after a running start
+  description:
+    summary: Run at 5 times your normal speed, plus +5 ft. base movement (Elyndor house rule)
+    value: >-
+      <p><em>You are swift of foot.</em></p><p><strong>Benefits</strong>: When
+      running, you move five times your normal speed (if wearing medium, light,
+      or no armor and carrying no more than a medium load) or four times your
+      speed (if wearing heavy armor or carrying a heavy load). If you make a
+      jump after a running start (see the Acrobatics skill description), you
+      gain a +4 bonus on your Acrobatics check. While running, you retain your
+      Dexterity bonus to your Armor Class.</p><p><strong>Normal</strong>: You
+      move four times your speed while running (if wearing medium, light, or no
+      armor and carrying no more than a medium load) or three times your speed
+      (if wearing heavy armor or carrying a heavy load), and you lose your
+      Dexterity bonus to AC.</p><p><strong>Elyndor House Rule</strong>: This
+      feat also grants a flat +5 ft. bonus to base movement speed
+      (Docs/house-rules §6.4), applied automatically via this item's own
+      <code>landSpeed</code> change — no additional setup needed.</p>
+  sources:
+    - id: PZO1110
+      pages: 116, 132
+  subType: feat
+  tags:
+    - General
+type: feat

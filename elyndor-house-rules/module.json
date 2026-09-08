@@ -1,0 +1,57 @@
+{
+  "id": "elyndor-house-rules",
+  "title": "Elyndor House Rules",
+  "description": "Primary/Secondary dual-class progression, custom skill-point pools, doubled save-ability modifiers, 1-feat-per-level, and class/race/movement tweaks for the Elyndor pf1 campaign.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [],
+  "relationships": {
+    "systems": [
+      {
+        "id": "pf1",
+        "compatibility": {
+          "minimum": "11.8",
+          "verified": "11.11"
+        }
+      }
+    ]
+  },
+  "esmodules": ["scripts/module.mjs"],
+  "styles": ["styles/elyndor-house-rules.css"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "packs": [
+    {
+      "name": "elyndor-classes",
+      "label": "Elyndor: Classes",
+      "path": "packs/elyndor-classes",
+      "type": "Item",
+      "system": "pf1"
+    },
+    {
+      "name": "elyndor-races",
+      "label": "Elyndor: Races",
+      "path": "packs/elyndor-races",
+      "type": "Item",
+      "system": "pf1"
+    },
+    {
+      "name": "elyndor-feats",
+      "label": "Elyndor: Feats & Talents",
+      "path": "packs/elyndor-feats",
+      "type": "Item",
+      "system": "pf1"
+    }
+  ],
+  "url": "",
+  "manifest": "",
+  "download": ""
+}

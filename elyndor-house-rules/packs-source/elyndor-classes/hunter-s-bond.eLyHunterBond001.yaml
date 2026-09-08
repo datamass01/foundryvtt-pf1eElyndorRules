@@ -1,0 +1,31 @@
+_id: eLyHunterBond001
+_key: '!items!eLyHunterBond001'
+img: systems/pf1/icons/skills/green_21.jpg
+name: Hunter's Bond (Elyndor)
+system:
+  abilityType: ex
+  associations:
+    classes:
+      - Ranger
+  description:
+    summary: >-
+      Elyndor house rule: the animal companion option is removed (Docs/house-rules
+      §5.1) — Hunter's Bond always grants the ally-sharing bond.
+    value: >-
+      <p><strong>Elyndor House Rule</strong> (Docs/house-rules §5.1): class
+      options that grant an <em>animal companion</em> are removed by default.
+      Hunter's Bond no longer offers a choice between an animal companion and
+      a bond to allies — it always grants the ally-sharing bond below.</p>
+      <p>At 4th level, a ranger forms a bond with his hunting companions.
+      This bond allows him to spend a <em>move action</em> to grant half his
+      <em>favored enemy</em> bonus against a single target of the appropriate
+      type to all allies within 30 feet who can see or hear him. This bonus
+      lasts for a number of rounds equal to the ranger's <em>Wisdom</em>
+      modifier (minimum 1). This bonus does not stack with any <em>favored
+      enemy</em> bonuses possessed by his allies; they use whichever bonus is
+      higher.</p>
+  sources:
+    - id: PZO1110
+      pages: '66'
+  subType: classFeat
+type: feat

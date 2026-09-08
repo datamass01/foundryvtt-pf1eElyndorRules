@@ -1,0 +1,35 @@
+{
+  "ELYNDOR": {
+    "PointBuy": {
+      "Elyndor": "Elyndor (30 points)"
+    },
+    "Settings": {
+      "ShowSkillPoolPanel": {
+        "Name": "Show skill-point pool panel",
+        "Hint": "Show the advisory attribute-pool skill point readout on the character sheet's Skills tab."
+      }
+    },
+    "ClassRole": {
+      "Legend": "Elyndor Class Role",
+      "None": "None",
+      "Primary": "Primary",
+      "Secondary": "Secondary",
+      "NotEligibleSecondaryHint": "This class doesn't look like a 1st-level caster (its spellcasting has a level offset), so it may not be a valid Secondary Class choice."
+    },
+    "Warnings": {
+      "NotEligibleSecondary": "{name} does not appear to cast spells starting at 1st level, so it cannot be set as the Secondary Class.",
+      "LevelDrift": "{actor}: Primary Class is level {primary} but Secondary Class is level {secondary} — these are meant to advance together."
+    },
+    "Info": {
+      "RoleReassigned": "Moved the Elyndor class role from {from} to {to} (only one class may hold a given role)."
+    },
+    "SkillPools": {
+      "Summary": "Elyndor Skill Point Pools (advisory)",
+      "Ability": "Ability",
+      "CareerAvailable": "Career Points Available",
+      "RanksInMatchingSkills": "Ranks in Matching Skills",
+      "Generic": "Generic (CON + flat)",
+      "Hint": "Advisory only — pf1 doesn't track which pool paid for which rank, so this compares each ability's career total against ranks currently in skills it governs. Intimidate may draw from STR or CHA; the Generic row (CON modifier + 2/level, both unrestricted) covers any skill, including any shortfall above."
+    }
+  }
+}

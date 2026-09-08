@@ -1,0 +1,98 @@
+_id: eLyRogueCls00001
+_key: '!items!eLyRogueCls00001'
+img: systems/pf1/icons/items/inventory/lockpick.jpg
+name: Rogue (Elyndor)
+system:
+  armorProf:
+    - lgt
+  bab: med
+  changeFlags:
+    - weaponFinesse
+  classSkills:
+    - acr
+    - apr
+    - art
+    - blf
+    - clm
+    - crf
+    - dev
+    - dip
+    - dis
+    - esc
+    - int
+    - kdu
+    - klo
+    - lin
+    - lor
+    - per
+    - prf
+    - pro
+    - sen
+    - slt
+    - ste
+    - swm
+    - umd
+  description:
+    summary: >-
+      The rogue is a thief and a scout. Elyndor house rule: free Weapon
+      Finesse (Docs/house-rules §5).
+    value: >-
+      <p>Standard Pathfinder Rogue (see RefCode/packs/classes/rogue.*.yaml
+      for the full class text this entry intentionally omits to avoid
+      duplicating it).</p><p><strong>Elyndor House Rule</strong>: This Rogue
+      gains Weapon Finesse for free — it does not consume a Rogue Talent or
+      a feat slot. Mechanically this is the <code>weaponFinesse</code>
+      changeFlag (the same flag pf1's own Weapon Finesse feat sets, consumed
+      generically by the action-resolution code) declared directly on this
+      class item above, active for as long as the character has a level in
+      this class — no separate linked item needed.</p><p>Note: pf1 already
+      ships an existing "Hide in Plain Sight (ROG)" Advanced Talent
+      (Compendium.pf1.class-abilities.Item.k2DralSO0RIdeilQ), already tagged
+      for Rogue/Rogue (Unchained)/Ninja and discoverable via the Compendium
+      Browser's talent filter — Docs/house-rules §5's "new Advanced Talent"
+      request may already be satisfied by this existing item; no duplicate
+      talent has been created here pending confirmation with the GM.</p>
+  hd: 8
+  level: 1
+  links:
+    supplements:
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.pEODJDoTk7uhCZY7
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.6pjr8jMFSKqXkBKk
+      - level: 2
+        uuid: Compendium.pf1.class-abilities.Item.iBTrvPtn3jczInbn
+      - level: 2
+        uuid: Compendium.pf1.class-abilities.Item.KQYCRLEdD4bGA5ak
+      - level: 3
+        uuid: Compendium.pf1.class-abilities.Item.BoEkMviJrW0PKmhj
+      - level: 4
+        uuid: Compendium.pf1.class-abilities.Item.7WaQxnVaaoL4AGr8
+      - level: 8
+        uuid: Compendium.pf1.class-abilities.Item.ZfnHhhTFQVo0Lj4P
+      - level: 10
+        uuid: Compendium.pf1.class-abilities.Item.EQ7JGo4P1XirLO46
+      - level: 20
+        uuid: Compendium.pf1.class-abilities.Item.KmVwFz2ajNtvgvbp
+  savingThrows:
+    fort:
+      value: low
+    ref:
+      value: high
+    will:
+      value: low
+  skillsPerLevel: 8
+  sources:
+    - id: PZO1110
+      pages: 67-70
+  subType: base
+  tag: rogue
+  wealth: 4d6 * 10
+  weaponProf:
+    - simple
+    - Hand Crossbow
+    - Rapier
+    - Sap
+    - Shortbow
+    - Shortsword
+type: class

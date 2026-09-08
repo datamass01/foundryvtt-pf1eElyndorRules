@@ -1,0 +1,27 @@
+<details class="elyndor-skill-pools">
+  <summary>{{localize "ELYNDOR.SkillPools.Summary"}}</summary>
+  <table>
+    <thead>
+      <tr>
+        <th>{{localize "ELYNDOR.SkillPools.Ability"}}</th>
+        <th>{{localize "ELYNDOR.SkillPools.CareerAvailable"}}</th>
+        <th>{{localize "ELYNDOR.SkillPools.RanksInMatchingSkills"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each restrictedRows}}
+      <tr>
+        <td>{{localize this.label}}</td>
+        <td>{{this.careerTotal}}</td>
+        <td>{{this.ranksInMatchingSkills}}</td>
+      </tr>
+      {{/each}}
+      <tr class="generic-row">
+        <td>{{localize "ELYNDOR.SkillPools.Generic"}}</td>
+        <td>{{genericCareerTotal}}</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="hint">{{localize "ELYNDOR.SkillPools.Hint"}}</p>
+</details>

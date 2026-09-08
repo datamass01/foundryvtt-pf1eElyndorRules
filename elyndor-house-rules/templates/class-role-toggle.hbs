@@ -1,0 +1,18 @@
+<fieldset class="elyndor-role-fieldset">
+  <legend>{{localize "ELYNDOR.ClassRole.Legend"}}</legend>
+  <label>
+    <input type="radio" name="elyndor-role" value="" {{#unless role}}checked{{/unless}}>
+    {{localize "ELYNDOR.ClassRole.None"}}
+  </label>
+  <label>
+    <input type="radio" name="elyndor-role" value="primary" {{#if isPrimary}}checked{{/if}}>
+    {{localize "ELYNDOR.ClassRole.Primary"}}
+  </label>
+  <label>
+    <input type="radio" name="elyndor-role" value="secondary" {{#if isSecondary}}checked{{/if}}>
+    {{localize "ELYNDOR.ClassRole.Secondary"}}
+  </label>
+  {{#unless eligibleSecondary}}
+    <p class="notification warning">{{localize "ELYNDOR.ClassRole.NotEligibleSecondaryHint"}}</p>
+  {{/unless}}
+</fieldset>

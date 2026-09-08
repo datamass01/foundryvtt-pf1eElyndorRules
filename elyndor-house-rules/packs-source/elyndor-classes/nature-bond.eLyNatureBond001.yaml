@@ -1,0 +1,32 @@
+_id: eLyNatureBond001
+_key: '!items!eLyNatureBond001'
+img: systems/pf1/icons/skills/blue_21.jpg
+name: Nature Bond (Elyndor)
+system:
+  abilityType: ex
+  associations:
+    classes:
+      - Druid
+  description:
+    summary: >-
+      Elyndor house rule: the animal companion option is removed (Docs/house-rules
+      §5.1) — Nature Bond always grants a domain.
+    value: >-
+      <p><strong>Elyndor House Rule</strong> (Docs/house-rules §5.1): class
+      options that grant an <em>animal companion</em> are removed by default.
+      Nature Bond no longer offers a choice between a domain and an animal
+      companion — it always grants the domain option below.</p><p>At 1st
+      level, a druid forms a bond with nature, granting her one of the
+      following cleric domains: <em>Air</em>, <em>Animal</em>, <em>Earth</em>,
+      <em>Fire</em>, <em>Plant</em>, <em>Water</em>, or <em>Weather</em>.
+      Druids also have access to a set of <em>Animal and Terrain Domains</em>.
+      When determining the powers and bonus spells granted by this domain,
+      the druid's effective cleric level is equal to her druid level. A druid
+      also receives additional domain spell slots, just like a cleric. She
+      must prepare the spell from her domain in this slot and this spell
+      cannot be used to cast a spell spontaneously.</p>
+  sources:
+    - id: PZO1110
+      pages: '50'
+  subType: classFeat
+type: feat

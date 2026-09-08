@@ -1,0 +1,107 @@
+_id: eLyDruidClass001
+_key: '!items!eLyDruidClass001'
+img: systems/pf1/icons/spells/leaf-jade-3.jpg
+name: Druid (Elyndor)
+system:
+  alignment: Any neutral
+  armorProf:
+    - lgt
+    - med
+    - shl
+    - No Metal Armors
+  bab: med
+  casting:
+    ability: wis
+    cantrips: true
+    domain: 1
+    progression: high
+    spells: divine
+    type: prepared
+  classSkills:
+    - art
+    - clm
+    - crf
+    - fly
+    - han
+    - hea
+    - kge
+    - kna
+    - lor
+    - per
+    - pro
+    - rid
+    - spl
+    - sur
+    - swm
+  description:
+    summary: >-
+      A worshiper of all things natural. Elyndor house rule: Nature Bond no
+      longer offers an animal companion, only a domain (Docs/house-rules
+      §5.1).
+    value: >-
+      <p>Standard Pathfinder Druid (see RefCode/packs/classes/druid.*.yaml
+      for the full class text this entry intentionally omits to avoid
+      duplicating it).</p><p><strong>Elyndor House Rule</strong>: Nature Bond
+      (linked below at 1st level) is replaced with an Elyndor variant that
+      always grants a domain — the animal companion option is removed by
+      default per Docs/house-rules §5.1.</p>
+  hd: 8
+  level: 1
+  links:
+    supplements:
+      - level: 1
+        uuid: Compendium.elyndor-house-rules.elyndor-classes.Item.eLyNatureBond001
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.UJPlPj3RUKLvmKzM
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.Yr8dfM2d8JEWoYkr
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.utbMg45UlQKSuak9
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.exdHrqciehozr5SD
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.HL53FUqkS4PZCMIK
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.RaFl9SpbAlXqhsDk
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.YGxrR8krrZAviojA
+      - level: 2
+        uuid: Compendium.pf1.class-abilities.Item.5iXq1igb1Cq0qobT
+      - level: 3
+        uuid: Compendium.pf1.class-abilities.Item.adslhIPLFgIaHBfh
+      - level: 4
+        uuid: Compendium.pf1.class-abilities.Item.0j7haa7K5O1CJ3ot
+      - level: 4
+        uuid: Compendium.pf1.class-abilities.Item.sJdBOE9lwz5XAkUi
+      - level: 9
+        uuid: Compendium.pf1.class-abilities.Item.yzmKDxR63yS5fqlc
+      - level: 13
+        uuid: Compendium.pf1.class-abilities.Item.MXj2WoyW7vLxiVYw
+      - level: 15
+        uuid: Compendium.pf1.class-abilities.Item.5JlthJkVGEHPZypG
+  savingThrows:
+    fort:
+      value: high
+    ref:
+      value: low
+    will:
+      value: high
+  skillsPerLevel: 4
+  sources:
+    - id: PZO1110
+      pages: 48-54
+  subType: base
+  tag: druid
+  wealth: 2d6 * 10
+  weaponProf:
+    - Club
+    - Dagger
+    - Dart
+    - Quarterstaff
+    - Scimitar
+    - Scythe
+    - Sickle
+    - Shortspear
+    - Sling
+    - Spear
+type: class

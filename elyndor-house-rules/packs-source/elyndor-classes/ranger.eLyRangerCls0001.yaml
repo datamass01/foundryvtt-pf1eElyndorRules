@@ -1,0 +1,109 @@
+_id: eLyRangerCls0001
+_key: '!items!eLyRangerCls0001'
+img: systems/pf1/icons/items/weapons/longbow.PNG
+name: Ranger (Elyndor)
+system:
+  armorProf:
+    - lgt
+    - med
+    - shl
+  bab: high
+  casting:
+    ability: wis
+    cantrips: false
+    domain: 0
+    offset: -3
+    progression: low
+    spells: divine
+    type: prepared
+  classSkills:
+    - art
+    - clm
+    - crf
+    - han
+    - hea
+    - int
+    - kdu
+    - kge
+    - kna
+    - lor
+    - per
+    - pro
+    - rid
+    - spl
+    - ste
+    - sur
+    - swm
+  description:
+    summary: >-
+      A tracker and hunter. Elyndor house rule: Favored Terrain grants 2
+      terrains per selection instead of 1, and Hunter's Bond no longer
+      offers an animal companion (Docs/house-rules §5.1).
+    value: >-
+      <p>Standard Pathfinder Ranger (see RefCode/packs/classes/ranger.*.yaml
+      for the full class text this entry intentionally omits to avoid
+      duplicating it).</p><p><strong>Elyndor House Rule</strong>: Favored
+      Terrain (linked below at 3rd level) is replaced with an Elyndor
+      variant granting 2 terrain selections per pick instead of 1 — a
+      text-only update, since pf1 doesn't automate terrain selection or its
+      bonuses even at the normal 1-terrain rate. Hunter's Bond (linked below
+      at 4th level) is replaced with an Elyndor variant that always grants
+      the ally-sharing bond — the animal companion option is removed by
+      default per Docs/house-rules §5.1.</p>
+  hd: 10
+  hp: 10
+  level: 1
+  links:
+    supplements:
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.XmALhWqXdN9yOmtd
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.r8wPs0bB3WhOLxbX
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.Yr8dfM2d8JEWoYkr
+      - level: 2
+        uuid: Compendium.pf1.class-abilities.Item.BO7BEFHDcf6qBaYV
+      - level: 3
+        uuid: Compendium.elyndor-house-rules.elyndor-classes.Item.eLyFavTerr000001
+      - level: 3
+        uuid: Compendium.pf1.class-abilities.Item.E0skJEqlJOvB5CoA
+      - level: 4
+        uuid: Compendium.pf1.class-abilities.Item.Xi5BENHWBu1hLHKl
+      - level: 4
+        uuid: Compendium.elyndor-house-rules.elyndor-classes.Item.eLyHunterBond001
+      - level: 7
+        uuid: Compendium.pf1.class-abilities.Item.5iXq1igb1Cq0qobT
+      - level: 8
+        uuid: Compendium.pf1.class-abilities.Item.sk0HNTe9lKBpHQpN
+      - level: 9
+        uuid: Compendium.pf1.class-abilities.Item.Fm1FXt1gZX5PxBrT
+      - level: 11
+        uuid: Compendium.pf1.class-abilities.Item.5NS7Ec3WhKIkhygg
+      - level: 12
+        uuid: Compendium.pf1.class-abilities.Item.E90iE6Ynyq1cgGXA
+      - level: 16
+        uuid: Compendium.pf1.class-abilities.Item.Cc2eFfhJYlClCGEH
+      - level: 17
+        uuid: Compendium.pf1.class-abilities.Item.ytotO22rp5ji6rT1
+      - level: 19
+        uuid: Compendium.pf1.class-abilities.Item.oRac7XDHBN0JzuyY
+      - level: 20
+        uuid: Compendium.pf1.class-abilities.Item.GAHaeOGTBeR6LJ3K
+  savingThrows:
+    fort:
+      value: high
+    ref:
+      value: high
+    will:
+      value: low
+  skillsPerLevel: 6
+  sources:
+    - id: PZO1110
+      pages: 64-67
+  subType: base
+  tag: ranger
+  wealth: 5d6 * 10
+  weaponProf:
+    - simple
+    - martial
+type: class

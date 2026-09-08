@@ -1,0 +1,89 @@
+_id: eLyClericCls0001
+_key: '!items!eLyClericCls0001'
+img: systems/pf1/icons/items/inventory/badge-cross.jpg
+name: Cleric (Elyndor)
+system:
+  armorProf:
+    - lgt
+    - med
+    - hvy
+    - shl
+  bab: med
+  casting:
+    ability: wis
+    cantrips: true
+    domain: 1
+    progression: high
+    spells: divine
+    type: prepared
+  classSkills:
+    - apr
+    - dip
+    - hea
+    - kar
+    - khi
+    - kno
+    - kpl
+    - kre
+    - lin
+    - lor
+    - pro
+    - sen
+    - spl
+  description:
+    summary: >-
+      A devout follower of a deity, the cleric can heal wounds, raise the dead,
+      and call down the wrath of the gods. Elyndor house rule: free Heavy
+      Armor proficiency and free Turn/Command Undead (Docs/house-rules §5).
+    value: >-
+      <p>Standard Pathfinder Cleric (see RefCode/packs/classes/cleric.*.yaml
+      for the full class text this entry intentionally omits to avoid
+      duplicating it).</p><p><strong>Elyndor House Rule</strong>: This Cleric
+      gains Heavy Armor proficiency for free (added to <code>armorProf</code>
+      above, alongside the core Light/Medium/Shield proficiencies) and gains
+      Turn Undead and Command Undead for free at 1st level, granted
+      automatically below via <code>links.supplements</code> pointing at
+      pf1's own core Turn Undead / Command Undead feat items — not gated
+      behind a Channel Energy build choice.</p>
+  hd: 8
+  level: 1
+  links:
+    supplements:
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.kXXz1lO4i7CibHJ9
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.zrUJt7YpAJkf2NC6
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.Wkv124hVPATT35bm
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.kx2ZfV2wjlAZgQ6E
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.exdHrqciehozr5SD
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.EvrFDqZDbbFS4Avb
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.RaFl9SpbAlXqhsDk
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.W4PGylYL7ghRfy5G
+      - level: 1
+        uuid: Compendium.pf1.feats.Item.O7Dn4bXZtMW0UstG
+      - level: 1
+        uuid: Compendium.pf1.feats.Item.CjLNTqNGz4zU4zpp
+  savingThrows:
+    fort:
+      value: high
+    ref:
+      value: low
+    will:
+      value: high
+  skillsPerLevel: 2
+  sources:
+    - id: PZO1110
+      pages: 38-48
+  subType: base
+  tag: cleric
+  wealth: 4d6 * 10
+  weaponProf:
+    - simple
+    - Favored Weapon
+type: class

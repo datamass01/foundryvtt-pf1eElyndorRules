@@ -1,0 +1,109 @@
+_id: eLyPaladinCls001
+_key: '!items!eLyPaladinCls001'
+img: systems/pf1/icons/spells/protect-royal-3.jpg
+name: Paladin (Elyndor)
+system:
+  alignment: Any (must adhere to chosen deity's tenets)
+  armorProf:
+    - lgt
+    - med
+    - hvy
+    - shl
+  bab: high
+  casting:
+    ability: cha
+    cantrips: false
+    domain: 0
+    offset: -3
+    progression: low
+    spells: divine
+    type: prepared
+  classSkills:
+    - art
+    - crf
+    - dip
+    - han
+    - hea
+    - kno
+    - kre
+    - lor
+    - pro
+    - rid
+    - sen
+    - spl
+  description:
+    summary: >-
+      The paladin is a devoted crusader. Elyndor house rule: no alignment
+      restriction on Smite Evil or on which deity a Paladin may worship,
+      provided the character adheres to that deity's tenets
+      (Docs/house-rules §5).
+    value: >-
+      <p>Standard Pathfinder Paladin (see RefCode/packs/classes/paladin.*.yaml
+      for the full class text this entry intentionally omits to avoid
+      duplicating it).</p><p><strong>Elyndor House Rule</strong>: pf1 has no
+      code-level enforcement of Smite Evil's evil-only targeting or of
+      alignment/deity matching today (confirmed: zero hits searching pf1's
+      own source for "smite", and `alignment`/`deity` are unenforced
+      free-text fields) — so there is nothing to mechanically override here.
+      This entry's <code>alignment</code> field above is updated to reflect
+      the house rule textually. A Paladin may worship any deity, provided
+      she adheres to that deity's tenets; Smite Evil is unrestricted by
+      target alignment. Full mechanical automation of Smite Evil (evil-only
+      targeting, Cha-to-attack, level-to-damage, DR bypass) is out of scope
+      of this house rule and would be a separate feature if ever
+      requested.</p>
+  hd: 10
+  hp: 10
+  level: 1
+  links:
+    supplements:
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.nzqkSBc6tvAqG8o2
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.2YqtYAfLcV7KWkpJ
+      - level: 1
+        uuid: Compendium.pf1.class-abilities.Item.2TsDfK0SKC8IGVx4
+      - level: 2
+        uuid: Compendium.pf1.class-abilities.Item.eYuNS8kf9Z3V6kjO
+      - level: 2
+        uuid: Compendium.pf1.class-abilities.Item.WhE4j0Jc82npdMCP
+      - level: 3
+        uuid: Compendium.pf1.class-abilities.Item.RNIkkvqaq2iVrahs
+      - level: 3
+        uuid: Compendium.pf1.class-abilities.Item.C5tWPm12qyz5ND9u
+      - level: 3
+        uuid: Compendium.pf1.class-abilities.Item.Er8h3fZ2edJEviTv
+      - level: 4
+        uuid: Compendium.pf1.class-abilities.Item.6h8ESfQp4dwX4qhk
+      - level: 4
+        uuid: Compendium.pf1.class-abilities.Item.tHObxrPeyhimmz9V
+      - level: 5
+        uuid: Compendium.pf1.class-abilities.Item.z4NJaCcj9VZpBv7d
+      - level: 8
+        uuid: Compendium.pf1.class-abilities.Item.jiBCmy0kP1Uwaz0D
+      - level: 11
+        uuid: Compendium.pf1.class-abilities.Item.wHfy3OJmTimVgXuO
+      - level: 14
+        uuid: Compendium.pf1.class-abilities.Item.cUv3fmnuhtQjgQM5
+      - level: 17
+        uuid: Compendium.pf1.class-abilities.Item.iFq0EX4yovswIox9
+      - level: 20
+        uuid: Compendium.pf1.class-abilities.Item.BPRtCoYTMDwsITXJ
+  savingThrows:
+    fort:
+      value: high
+    ref:
+      value: low
+    will:
+      value: high
+  skillsPerLevel: 2
+  sources:
+    - id: PZO1110
+      pages: 60-64
+  subType: base
+  tag: paladin
+  wealth: 5d6 * 10
+  weaponProf:
+    - simple
+    - martial
+type: class

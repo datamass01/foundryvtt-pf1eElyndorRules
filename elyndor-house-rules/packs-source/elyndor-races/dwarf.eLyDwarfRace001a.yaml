@@ -1,0 +1,79 @@
+_id: eLyDwarfRace001a
+_key: '!items!eLyDwarfRace001a'
+img: systems/pf1/icons/races/dwarf.png
+name: Dwarf (Elyndor)
+system:
+  changeFlags:
+    - noMediumEncumbrance
+    - noHeavyEncumbrance
+    - mediumArmorFullSpeed
+    - heavyArmorFullSpeed
+  changes:
+    eLyDwarfWis001:
+      _id: eLyDwarfWis001
+      formula: '2'
+      target: wis
+      type: racial
+    eLyDwarfCon001:
+      _id: eLyDwarfCon001
+      formula: '2'
+      target: con
+      type: racial
+    eLyDwarfCha001:
+      _id: eLyDwarfCha001
+      formula: '-2'
+      target: cha
+      type: racial
+  contextNotes:
+    eLyDwarfCmd001:
+      target: cmd
+      text: +[[4]] Racial vs Bull Rush and Trip while on ground
+    eLyDwarfPer001:
+      target: skill.per
+      text: +[[2]] to Notice Unusual Stonework
+    eLyDwarfAc001:
+      target: ac
+      text: +[[4]] Dodge vs Giants
+    eLyDwarfSave001:
+      target: allSavingThrows
+      text: +[[2]] Racial vs Poisons, Spells and Spell-likes
+    eLyDwarfApr001:
+      target: skill.apr
+      text: +[[2]] Racial to Appraise Items with Gems
+    eLyDwarfAtk001:
+      target: attack
+      text: +[[1]] Racial vs Humanoids (Orc, Goblinoid)
+  creatureSubtypes:
+    - dwarf
+  creatureTypes:
+    - humanoid
+  description:
+    summary: >-
+      Standard Pathfinder Dwarf, with the Elyndor house rule reducing base
+      land speed to 15 ft. (see below); otherwise identical to the core
+      Dwarf (see RefCode/packs/races/core/dwarf.*.yaml for the full racial
+      traits text this entry intentionally omits to avoid duplicating it).
+    value: >-
+      <p><strong>Elyndor House Rule</strong>: Docs/house-rules
+      §6.1 reclassifies Dwarves to a Small-style base land speed of 15 ft.
+      (Dwarves otherwise remain Medium-size for all other purposes — carrying
+      capacity, weapon damage, reach, etc.). All other standard Dwarf racial
+      traits (ability adjustments, darkvision, defensive training, hardy,
+      stability, greed, stonecunning, hatred, weapon familiarity, and the
+      "never slowed by armor/encumbrance" trait) are unchanged from core and
+      reproduced mechanically above via the same changeFlags/changes/
+      contextNotes as pf1's own Dwarf entry.</p>
+  languages:
+    - common
+    - dwarven
+  size: med
+  speeds:
+    land: 15
+  tags:
+    - Core
+    - Elyndor
+  weaponProf:
+    - Battle Axe
+    - Heavy Pick
+    - Warhammer
+type: race
