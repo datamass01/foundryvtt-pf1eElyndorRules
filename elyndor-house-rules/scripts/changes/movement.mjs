@@ -86,6 +86,12 @@ export function applyMovementChanges(actor, changes) {
       operator: "add",
       target: "landSpeed",
       type: "untyped",
+      // See feats.mjs's applyFeatCountChange for why `flavor` is required
+      // here: without it this parentless ItemChange shows as a bare
+      // "Untyped" line instead of its true source. Same
+      // `pf1.config.abilities[ability]` pattern already used for the
+      // second-save Changes in saves-bab-lag.mjs.
+      flavor: pf1.config.abilities.dex,
     }),
   );
 }

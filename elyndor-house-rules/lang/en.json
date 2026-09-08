@@ -29,8 +29,10 @@
       "Ability": "Ability",
       "CareerAvailable": "Career Points Available",
       "RanksInMatchingSkills": "Ranks in Matching Skills",
-      "Generic": "Generic (CON + flat + racial)",
-      "Hint": "Advisory only — pf1 doesn't track which pool paid for which rank, so this compares each ability's career total against ranks currently in skills it governs. Ranks past an ability's cap show as n (x): n in that pool, x overflow counted on Generic. Intimidate may draw from STR or CHA. Generic (CON + 2/level + racial, all unrestricted) covers any skill; its used count turns red if it exceeds its own cap."
+      "Generic": "Generic (CON + flat + bonus)",
+      "Hint": "Advisory only — pf1 doesn't track which pool paid for which rank, so this compares each ability's career total against ranks currently in skills it governs. Ranks past an ability's cap show as n (x): n in that pool, x overflow counted on Generic. Intimidate may draw from STR or CHA. Generic (CON + 2/level + any other bonus skill ranks from race, feats, class features, or the sheet's bonus formula, all unrestricted) covers any skill; its used count turns red if it exceeds its own cap.",
+      "Flat": "Generic (flat)",
+      "FormulaOffset": "Elyndor Skill Formula (replaces class base)"
     }
   }
 }

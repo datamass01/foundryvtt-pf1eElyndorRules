@@ -13,7 +13,7 @@
  */
 import { MODULE_ID } from "../const.mjs";
 import { getPrimaryClass } from "../class-roles.mjs";
-import { skillPointPools, POOL_ABILITIES, racialBonusSkillRanks } from "../lib/formulas.mjs";
+import { skillPointPools, POOL_ABILITIES, otherBonusSkillRanks } from "../lib/formulas.mjs";
 
 const TEMPLATE_PATH = `modules/${MODULE_ID}/templates/skill-pool-panel.hbs`;
 const INJECTED_CLASS = `${MODULE_ID}-skill-pool-panel`;
@@ -58,9 +58,11 @@ async function onRenderCharacterSheet(app, html) {
 
   const perLevelPools = skillPointPools(actor);
   const genericPerLevel = perLevelPools.con + perLevelPools.flat;
-  // Racial bonus ranks (Human Skilled, etc.) are unrestricted and already
-  // career-total in the race formula; do not multiply by characterLevel.
-  const genericCareerTotal = genericPerLevel * characterLevel + racialBonusSkillRanks(actor);
+  // Bonus skill ranks from race features, feats, class features, or the
+  // sheet's manual bonus formula (Human Skilled, etc.) are unrestricted and
+  // already career-total in their own formulas; do not multiply by
+  // characterLevel.
+  const genericCareerTotal = genericPerLevel * characterLevel + otherBonusSkillRanks(actor);
 
   const restrictedRows = POOL_ABILITIES.filter((id) => id !== "con").map((abilityId) => {
     const careerTotal = perLevelPools[abilityId] * characterLevel;
