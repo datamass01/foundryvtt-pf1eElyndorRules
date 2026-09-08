@@ -126,6 +126,7 @@ below for what's still open.
 | Skill points: per-pool advisory readout | `scripts/ui/skill-pool-panel.mjs`, `templates/skill-pool-panel.hbs` |
 | Dex-to-speed scaling (permanent mod only, floored at racial base) | `scripts/changes/movement.mjs` |
 | Class-role toggle UI (class Item Sheet) | `scripts/ui/class-role-toggle.mjs`, `templates/class-role-toggle.hbs` |
+| Class Role column on the character sheet classes list | `scripts/ui/class-role-column.mjs` |
 | Point buy 30-point tier | `scripts/settings.mjs` |
 | Cleric: heavy armor + free Turn/Command Undead | `packs-source/elyndor-classes/cleric.eLyClericCls0001.yaml` |
 | Rogue: free Weapon Finesse | `packs-source/elyndor-classes/rogue.eLyRogueCls00001.yaml` |

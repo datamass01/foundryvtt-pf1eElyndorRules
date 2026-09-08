@@ -11,6 +11,7 @@
     },
     "ClassRole": {
       "Legend": "Elyndor Class Role",
+      "Column": "Class Role",
       "None": "None",
       "Primary": "Primary",
       "Secondary": "Secondary",

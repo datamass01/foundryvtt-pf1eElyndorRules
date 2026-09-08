@@ -39,6 +39,25 @@
   margin: 0.25rem 0 0;
 }
 
+/* Live v11.11 classes list is Type / Level / Action; RefCode's current
+ * source dropped the Action header. Same column class works on both. */
+.pf1.sheet .classes-body .item-detail.elyndor-house-rules-class-role {
+  flex: 0 0 110px;
+}
+
+.pf1.sheet .classes-body .item-detail.elyndor-house-rules-class-role select {
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  padding: 0 2px;
+  font: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 3px;
+}
+
 .elyndor-skill-pools table {
   width: 100%;
   border-collapse: collapse;

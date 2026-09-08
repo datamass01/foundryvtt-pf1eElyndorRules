@@ -2,9 +2,10 @@
  * Primary/Secondary class-role bookkeeping.
  *
  * This is the single manual step a GM/player performs (toggle a class item's
- * role via `ui/class-role-toggle.mjs`); every other module file resolves
- * "which class is Secondary/Primary" through the helpers here, so there is
- * exactly one place that defines what those words mean.
+ * role via `ui/class-role-toggle.mjs` on the class Item Sheet, or the Class
+ * Role column on the character sheet's classes list); every other module
+ * file resolves "which class is Secondary/Primary" through the helpers here,
+ * so there is exactly one place that defines what those words mean.
  */
 import { MODULE_ID, ROLE_FLAG, ROLE, SECONDARY_LEVEL_LAG, SECONDARY_LEVEL_FLOOR } from "./const.mjs";
 
@@ -60,16 +61,18 @@ export function isEligibleSecondary(item) {
  *
  * @param {pf1.documents.ItemPF} item
  * @param {"primary"|"secondary"|null} role
+ * @returns {Promise<boolean>} `true` if the flag was written (or cleared);
+ *   `false` if the request was refused (no actor, ineligible Secondary).
  */
 export async function setClassRole(item, role) {
   const actor = item?.actor;
-  if (!actor) return;
+  if (!actor) return false;
 
   if (role === ROLE.SECONDARY && !isEligibleSecondary(item)) {
     ui.notifications?.warn(
       game.i18n.format("ELYNDOR.Warnings.NotEligibleSecondary", { name: item.name }),
     );
-    return;
+    return false;
   }
 
   if (role) {
@@ -89,6 +92,7 @@ export async function setClassRole(item, role) {
 
   if (role) await item.setFlag(MODULE_ID, ROLE_FLAG, role);
   else await item.unsetFlag(MODULE_ID, ROLE_FLAG);
+  return true;
 }
 
 /**
