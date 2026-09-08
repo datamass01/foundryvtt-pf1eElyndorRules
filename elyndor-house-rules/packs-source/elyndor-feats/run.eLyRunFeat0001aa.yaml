@@ -3,16 +3,24 @@ _key: '!items!eLyRunFeat0001aa'
 img: systems/pf1/icons/feats/run.jpg
 name: Run (Elyndor)
 system:
+  # pf1 v11.11: changes/contextNotes are arrays; changeFlags is a boolean map.
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
   changes:
-    eLyRunChange01:
-      _id: eLyRunChange01
+    - _id: eLyRunChange01
       formula: '5'
       target: landSpeed
       type: untyped
-  changeFlags: []
   contextNotes:
-    TJupP8BOKm9NaPJJ:
-      target: skill.acr
+    - target: skill.acr
       text: +[[4]] to jump after a running start
   description:
     summary: Run at 5 times your normal speed, plus +5 ft. base movement (Elyndor house rule)

@@ -74,12 +74,21 @@ export function registerDualClassTests() {
           expect(actor.system.attributes.hp.max).to.be.greaterThan(0);
         });
 
-        it("Will save reflects max(Fighter@5, Sorcerer@3) plus doubled ability mods", () => {
-          // Fighter (poor Will) @5 = 1; Sorcerer (good Will) @3 = 3 -> max = 3.
-          // Plus WIS mod (core) + CHA mod (Elyndor 2nd ability, §3.2).
-          const wisMod = actor.system.abilities.wis.mod;
-          const chaMod = actor.system.abilities.cha.mod;
-          expect(actor.system.attributes.savingThrows.will.total).to.equal(3 + wisMod + chaMod);
+        it("base saves pick max(Primary @5, Secondary @3), not the sum", () => {
+          // Secondary save bases are the lagged table (Sorcerer as if level 3),
+          // not the lockstep level-5 table, and they are not added on top of
+          // Fighter's bases.
+          expect(sorcerer.system.savingThrows.fort.base).to.equal(1);
+          expect(sorcerer.system.savingThrows.ref.base).to.equal(1);
+          expect(sorcerer.system.savingThrows.will.base).to.equal(3);
+
+          const { str, dex, con, int, wis, cha } = actor.system.abilities;
+          // Fort: max(Fighter@5 high=4, Sorcerer@3 low=1) = 4; + CON + STR.
+          expect(actor.system.attributes.savingThrows.fort.total).to.equal(4 + con.mod + str.mod);
+          // Ref: max(Fighter@5 poor=1, Sorcerer@3 poor=1) = 1; + DEX + INT.
+          expect(actor.system.attributes.savingThrows.ref.total).to.equal(1 + dex.mod + int.mod);
+          // Will: max(Fighter@5 poor=1, Sorcerer@3 high=3) = 3; + WIS + CHA.
+          expect(actor.system.attributes.savingThrows.will.total).to.equal(3 + wis.mod + cha.mod);
         });
 
         it("feat count is 1 per character level, not 1 per odd level", () => {
