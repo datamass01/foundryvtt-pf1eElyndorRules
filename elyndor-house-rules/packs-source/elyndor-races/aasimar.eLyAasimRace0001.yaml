@@ -1,0 +1,57 @@
+_id: eLyAasimRace0001
+_key: '!items!eLyAasimRace0001'
+img: systems/pf1/icons/races/aasimar.png
+name: Aasimar (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: 9znnwx5o
+    formula: '2'
+    target: wis
+    type: racial
+  - _id: 78f2uhd2
+    formula: '2'
+    target: cha
+    type: racial
+  - _id: z8dsccn8
+    formula: '2'
+    target: skill.dip
+    type: racial
+  - _id: 9nqnt98u
+    formula: '2'
+    target: skill.per
+    type: racial
+  creatureSubtypes:
+  - native
+  creatureTypes:
+  - outsider
+  description:
+    summary: Standard Pathfinder Aasimar; the Elyndor house rule reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Aasimar otherwise remains Medium-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Aasimar racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Aasimar compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  - celestial
+  size: med
+  speeds:
+    land: 20
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Uncommon
+  - Planetouched
+  - Southern (Garund)
+  - Eastern (Tian Xia)
+  - Elyndor
+type: race

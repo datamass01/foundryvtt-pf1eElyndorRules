@@ -1,0 +1,60 @@
+_id: eLyRatfoRace0053
+_key: '!items!eLyRatfoRace0053'
+img: systems/pf1/icons/races/ratfolk.png
+name: Ratfolk (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: ka1hw98q
+    formula: '2'
+    target: dex
+    type: racial
+  - _id: sxncfc1l
+    formula: '2'
+    target: int
+    type: racial
+  - _id: mezpr6tv
+    formula: '-2'
+    target: str
+    type: racial
+  - _id: mzep19d6
+    formula: '2'
+    target: skill.per
+    type: racial
+  - _id: vicbo7b0
+    formula: '2'
+    target: skill.umd
+    type: racial
+  contextNotes:
+  - target: skill.han
+    text: +[[4]] to Influence Rodents
+  creatureSubtypes:
+  - ratfolk
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Ratfolk; the Elyndor house rule reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Ratfolk otherwise remains Small-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Ratfolk racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Ratfolk compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  size: sm
+  speeds:
+    land: 15
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Rare
+  - Elyndor
+type: race

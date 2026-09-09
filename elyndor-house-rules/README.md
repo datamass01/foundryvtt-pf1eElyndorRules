@@ -133,7 +133,8 @@ below for what's still open.
 | Paladin: alignment/deity text update (nothing to override in code) | `packs-source/elyndor-classes/paladin.eLyPaladinCls001.yaml` |
 | Ranger: Favored Terrain "2 terrains" text update; Hunter's Bond no longer offers an animal companion | `packs-source/elyndor-classes/ranger.eLyRangerCls0001.yaml`, `favored-terrain.eLyFavTerr000001.yaml`, `hunter-s-bond.eLyHunterBond001.yaml` |
 | Druid: Nature Bond no longer offers an animal companion (domain only) | `packs-source/elyndor-classes/druid.eLyDruidClass001.yaml`, `nature-bond.eLyNatureBond001.yaml` |
-| Dwarf base speed 15 ft. | `packs-source/elyndor-races/dwarf.eLyDwarfRace001a.yaml` |
+| Base land speed 20/15 ft. (Medium/Small), every pf1-core race | `packs-source/elyndor-races/*.yaml` (79 items: 77 generated Elyndor overrides of every Medium/Small race the pf1 system's own core Races compendium ships, plus the hand-authored Dwarf and Lythari below; Large races Ogre/Trox are untouched — §8.1 doesn't define a Large value) |
+| Dwarf base speed 15 ft. (Small-style carve-out despite Medium size) | `packs-source/elyndor-races/dwarf.eLyDwarfRace001a.yaml` |
 | Lythari (new custom race: Fey lycanthrope elf-kin) | `packs-source/elyndor-races/lythari.eLyLythariRace1a.yaml` |
 | Run feat +5 ft. | `packs-source/elyndor-feats/run.eLyRunFeat0001aa.yaml` |
 | Quench test scaffold | `test/dual-class.test.mjs` |
@@ -153,7 +154,37 @@ satisfied by vanilla pf1 — confirm with the GM before authoring a duplicate.
 
 ## Known risks — verify these live before trusting them at the table
 
-1. **OPEN — Fractional Base Bonuses interaction** (`changes/saves-bab-lag.mjs`).
+1. **RESOLVED (verified live) — Base land speed reduction now covers every
+   pf1-core Medium/Small race, not just Dwarf.** §8.1 is a *relative*
+   reduction, not a flat cap: **−10 ft. for Medium races, −5 ft. for Small
+   races**, floored at a minimum of 5 ft. (never below that, regardless of
+   how slow a race's core speed already is). `packs-source/elyndor-races/`
+   has 79 items: a generated Elyndor override of every Medium- and
+   Small-size race in the pf1 system's own core Races compendium (77 races,
+   auto-derived from the shipped `pf1.js`/compendium data — everything else
+   about each race is byte-for-byte unchanged, only `speeds.land` is
+   reduced), plus the pre-existing hand-authored Dwarf (special-cased, own
+   fixed 15 ft., untouched by this formula) and Lythari (20 ft.) entries.
+   Live-verified: fresh test actors built from the Human (Elyndor) and
+   Goblin (Elyndor) compendium items resolve `system.attributes.speed.land.base`
+   of **20** (30−10) and **25** (30−5) respectively; the Dex-to-speed house
+   rule (`movement.mjs`) and non-land movement modes were separately
+   confirmed unaffected by this change in an earlier pass on the same
+   mechanism. Large-size races (Ogre, Trox) are intentionally left alone —
+   §8.1 only defines Medium/Small.
+   The relative formula (vs. an earlier flat-cap draft) resolves what would
+   otherwise be two GM-facing oddities:
+   - **Fast-Small races keep their edge.** Core pf1 gives Goblin, Kobold,
+     and Grippli a Small-race exception (30 ft., not the normal Small
+     20 ft.). The −5 ft. relative reduction leaves them at 25 ft. — still
+     faster than a normal Small race's 15 ft., preserving the racial trait
+     instead of flattening it away.
+   - **No race increases in speed.** The four Medium-but-aquatic races
+     (Adaro, Locathah, Merfolk, Triton — core land speed only 5–10 ft.,
+     their real mobility is `swim`) all land on the 5 ft. floor: Adaro/
+     Locathah drop from 10 to 5, Merfolk/Triton stay at 5. Nothing goes up.
+
+2. **OPEN — Fractional Base Bonuses interaction** (`changes/saves-bab-lag.mjs`).
    The save-lag delta is computed by diffing against each class's own
    already-computed `savingThrows[id].base`, which should be setting-agnostic
    in principle — but the "Fractional Base Bonuses" world setting changes
@@ -164,7 +195,7 @@ satisfied by vanilla pf1 — confirm with the GM before authoring a duplicate.
    confirm the Will/Fort/Ref totals still match
    `max(primary.base, secondary.base@level-2)` plus ability mods.
 
-2. **RESOLVED (verified live) — Permanent-vs-buffed Dex for movement**
+3. **RESOLVED (verified live) — Permanent-vs-buffed Dex for movement**
    (`changes/movement.mjs`). All four scenarios from the plan's Verification
    §7 now pass live: baseline permanent +2 Dex → +10 ft; a temporary +4 Dex
    buff on top does not add further; a -6 Dex debuff correctly reduces speed
@@ -173,7 +204,7 @@ satisfied by vanilla pf1 — confirm with the GM before authoring a duplicate.
    now pushed as a Change formula string, not a precomputed number, so it's
    evaluated after abilities resolve rather than before.
 
-3. **RESOLVED, now live-verified — `attributes.hd.total`/`details.level.value`
+4. **RESOLVED, now live-verified — `attributes.hd.total`/`details.level.value`
    no longer double under lockstep leveling** (confirmed on the level-5
    Fighter+Sorcerer test actor: both read 5, not 10 — see the verification
    log above). pf1 sums every class item's own
@@ -210,7 +241,7 @@ satisfied by vanilla pf1 — confirm with the GM before authoring a duplicate.
      undoubled value automatically — confirm on a real dual-class actor
      rather than assuming.
 
-4. **Skill-point pool panel is advisory/approximate, not an authoritative
+5. **Skill-point pool panel is advisory/approximate, not an authoritative
    ledger.** pf1 has no concept of "which pool paid for which rank," so the
    panel pairs each ability's career-total points against ranks currently
    in skills that ability governs, rather than computing a single
@@ -218,7 +249,7 @@ satisfied by vanilla pf1 — confirm with the GM before authoring a duplicate.
    not a bug — but make sure players understand it's a sanity-check display,
    not a spend-tracker.
 
-5. **Animal companion removal (Nature Bond / Hunter's Bond overrides) not
+6. **Animal companion removal (Nature Bond / Hunter's Bond overrides) not
    yet loaded in a live world.** Both `nature-bond.eLyNatureBond001.yaml`
    and `hunter-s-bond.eLyHunterBond001.yaml` were written by hand-trimming
    core pf1's compound "choose domain-or-companion" / "choose ally-bond-or-

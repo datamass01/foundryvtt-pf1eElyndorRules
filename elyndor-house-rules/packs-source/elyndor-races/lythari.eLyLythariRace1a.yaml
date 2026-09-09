@@ -3,10 +3,11 @@ _key: '!items!eLyLythariRace1a'
 img: systems/pf1/icons/races/creature-types/fey.png
 name: Lythari
 system:
-  # pf1 v11.11 stores these as arrays (and changeFlags as a boolean map).
-  # RefCode's later TypedObjectField/SetField shape is rejected by the
-  # installed system: Item preparation does `for...of` over `system.changes`,
-  # throws, and dropping the race onto a sheet is a silent no-op.
+  # pf1 v11.11 stores these as arrays (and changeFlags as a boolean map),
+  # verified against the shipped pf1 system's own compiled race compendium —
+  # a TypedObjectField/SetField shape is rejected by the installed system:
+  # Item preparation does `for...of` over `system.changes`, throws, and
+  # dropping the race onto a sheet is a silent no-op.
   changeFlags:
     immuneToMorale: false
     loseDexToAC: false
@@ -60,9 +61,9 @@ system:
       §9 (New Races). DR 5/iron-or-steel, cold resistance 5, and the
       three-form Change Shape trait are recorded here as description text
       only (matching pf1's own convention for race-granted energy
-      resistance/DR, e.g. RefCode/packs/races/other/ifrit — these are not
-      structured fields on the race item's data model and are applied by the
-      player/GM on the actor sheet).
+      resistance/DR — e.g. the core Ifrit compendium entry's fire resistance
+      is text-only too — these are not structured fields on the race item's
+      data model and are applied by the player/GM on the actor sheet).
     value: >-
       <h2>Starting Age</h2>
 

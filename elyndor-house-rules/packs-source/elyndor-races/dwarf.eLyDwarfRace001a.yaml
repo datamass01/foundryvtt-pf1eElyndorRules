@@ -3,8 +3,8 @@ _key: '!items!eLyDwarfRace001a'
 img: systems/pf1/icons/races/dwarf.png
 name: Dwarf (Elyndor)
 system:
-  # pf1 v11.11: changeFlags is a boolean map; changes/contextNotes are arrays.
-  # The RefCode SetField/TypedObjectField shape is a silent no-op on drop.
+  # pf1 v11.11: changeFlags is a boolean map; changes/contextNotes are arrays
+  # (verified against the shipped pf1 system's own compiled race compendium).
   changeFlags:
     immuneToMorale: false
     loseDexToAC: false
@@ -49,11 +49,12 @@ system:
     summary: >-
       Standard Pathfinder Dwarf, with the Elyndor house rule reducing base
       land speed to 15 ft. (see below); otherwise identical to the core
-      Dwarf (see RefCode/packs/races/core/dwarf.*.yaml for the full racial
-      traits text this entry intentionally omits to avoid duplicating it).
+      Dwarf (see that entry, in the pf1 system's own Races compendium, for
+      the full racial traits text this entry intentionally omits to avoid
+      duplicating it).
     value: >-
       <p><strong>Elyndor House Rule</strong>: Docs/house-rules
-      §6.1 reclassifies Dwarves to a Small-style base land speed of 15 ft.
+      §8.1 reclassifies Dwarves to a Small-style base land speed of 15 ft.
       (Dwarves otherwise remain Medium-size for all other purposes — carrying
       capacity, weapon damage, reach, etc.). All other standard Dwarf racial
       traits (ability adjustments, darkvision, defensive training, hardy,

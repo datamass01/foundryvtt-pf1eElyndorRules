@@ -1,0 +1,54 @@
+_id: eLyGrippRace0029
+_key: '!items!eLyGrippRace0029'
+img: icons/commodities/biological/foot-amphibian-green.webp
+name: Grippli (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: 151bekav
+    formula: '2'
+    target: dex
+    type: racial
+  - _id: ir6z6sxm
+    formula: '2'
+    target: wis
+    type: racial
+  - _id: nuu60llr
+    formula: '-2'
+    target: str
+    type: racial
+  contextNotes:
+  - target: skill.ste
+    text: +[[4]] Racial in Marshes and Forested Areas
+  creatureSubtypes:
+  - grippli
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Grippli; the Elyndor house rule reduces small humanoid base land speed by 5 ft., from 30 ft. to 25 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces small humanoid base land speed by 5 ft., from 30 ft. to 25 ft. Grippli otherwise remains Small-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Grippli racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Grippli compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  - grippli
+  size: sm
+  speeds:
+    land: 25
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: 20
+    burrow: null
+  tags:
+  - Rare
+  - Southern (Garund)
+  - Elyndor
+type: race

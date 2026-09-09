@@ -1,0 +1,57 @@
+_id: eLyOrcxxRace0050
+_key: '!items!eLyOrcxxRace0050'
+img: icons/skills/melee/hand-grip-staff-yellow-brown.webp
+name: Orc (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: ga5x8r0y
+    formula: '4'
+    target: str
+    type: racial
+  - _id: 2h1sr66x
+    formula: '-2'
+    target: int
+    type: racial
+  - _id: ii3itwey
+    formula: '-2'
+    target: wis
+    type: racial
+  - _id: xwbo25hj
+    formula: '-2'
+    target: cha
+    type: racial
+  creatureSubtypes:
+  - orc
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Orc; the Elyndor house rule reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Orc otherwise remains Medium-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Orc racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Orc compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  - orc
+  size: med
+  speeds:
+    land: 20
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Uncommon
+  - Elyndor
+  weaponProf:
+  - Greataxe
+  - Falchion
+type: race

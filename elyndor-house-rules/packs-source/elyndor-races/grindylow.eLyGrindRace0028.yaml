@@ -1,0 +1,61 @@
+_id: eLyGrindRace0028
+_key: '!items!eLyGrindRace0028'
+img: systems/pf1/icons/skills/ice_14.jpg
+name: Grindylow (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: n3ljh6y2
+    formula: '4'
+    target: dex
+    type: racial
+  - _id: 9m2a2vpv
+    formula: '-2'
+    target: int
+    type: racial
+  - _id: xwm8tpf0
+    formula: '-2'
+    target: wis
+    type: racial
+  - _id: 6q6ycaff
+    formula: '-2'
+    target: cha
+    type: racial
+  - _id: odcm4z72
+    formula: '2'
+    target: nac
+    type: base
+  - _id: qjb8ge5v
+    formula: '4'
+    target: skill.ste
+    type: racial
+  creatureSubtypes:
+  - aquatic
+  creatureTypes:
+  - aberration
+  description:
+    summary: Standard Pathfinder Grindylow; the Elyndor house rule reduces small humanoid base land speed by 5 ft., from 15 ft. to 10 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces small humanoid base land speed by 5 ft., from 15 ft. to 10 ft. Grindylow otherwise remains Small-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Grindylow racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Grindylow compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - aquan
+  size: sm
+  speeds:
+    land: 10
+    fly: null
+    flyManeuverability: ''
+    swim: 30
+    climb: null
+    burrow: null
+  tags:
+  - Bestiary
+  - Elyndor
+type: race

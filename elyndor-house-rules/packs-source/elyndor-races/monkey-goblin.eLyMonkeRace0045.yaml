@@ -1,0 +1,60 @@
+_id: eLyMonkeRace0045
+_key: '!items!eLyMonkeRace0045'
+img: systems/pf1/icons/skills/affliction_24.jpg
+name: Monkey Goblin (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: 030rnu3x
+    formula: '4'
+    target: dex
+    type: racial
+  - _id: fazi52ji
+    formula: '-2'
+    target: wis
+    type: racial
+  - _id: 6dfeetxp
+    formula: '-2'
+    target: cha
+    type: racial
+  - _id: 82s9ccrc
+    formula: '2'
+    target: skill.acr
+    type: racial
+  - _id: ib43m387
+    formula: '2'
+    target: skill.ste
+    type: racial
+  contextNotes:
+  - target: allSavingThrows
+    text: +[[2]] Racial vs. Fear Effects
+  creatureSubtypes:
+  - goblinoid
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Monkey Goblin; the Elyndor house rule reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Monkey Goblin otherwise remains Small-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Monkey Goblin racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Monkey Goblin compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - goblin
+  size: sm
+  speeds:
+    land: 15
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: 30
+    burrow: null
+  tags:
+  - Bestiary
+  - Elyndor
+type: race

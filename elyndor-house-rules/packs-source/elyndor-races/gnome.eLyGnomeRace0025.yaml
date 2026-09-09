@@ -1,0 +1,62 @@
+_id: eLyGnomeRace0025
+_key: '!items!eLyGnomeRace0025'
+img: systems/pf1/icons/races/gnome.png
+name: Gnome (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: kezkn3k4
+    formula: '2'
+    target: con
+    type: racial
+  - _id: 1yu39n9h
+    formula: '2'
+    target: cha
+    type: racial
+  - _id: pi8lg4y1
+    formula: '-2'
+    target: str
+    type: racial
+  - _id: cssv57sq
+    formula: '2'
+    target: skill.per
+    type: racial
+  contextNotes:
+  - target: ac
+    text: +[[4]] Dodge vs Giants
+  - target: allSavingThrows
+    text: +[[2]] Racial vs Illusion Effects
+  - target: attack
+    text: +[[1]] Racial vs Humanoids (Reptillian, Goblinoid)
+  creatureSubtypes:
+  - gnome
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Gnome; the Elyndor house rule reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Gnome otherwise remains Small-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Gnome racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Gnome compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  - gnome
+  - sylvan
+  size: sm
+  speeds:
+    land: 15
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Core
+  - Elyndor
+type: race
