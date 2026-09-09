@@ -1,0 +1,57 @@
+_id: eLyGobliRace0026
+_key: '!items!eLyGobliRace0026'
+img: systems/pf1/icons/races/goblin.png
+name: Goblin (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: 9fdr7x2j
+    formula: '4'
+    target: dex
+    type: racial
+  - _id: vsuh90d7
+    formula: '-2'
+    target: str
+    type: racial
+  - _id: 63pz2x98
+    formula: '-2'
+    target: cha
+    type: racial
+  - _id: 14eh0np3
+    formula: '4'
+    target: skill.rid
+    type: racial
+  - _id: j4ihktq6
+    formula: '4'
+    target: skill.ste
+    type: racial
+  creatureSubtypes:
+  - goblinoid
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Goblin; the Elyndor house rule reduces small humanoid base land speed by 5 ft., from 30 ft. to 25 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces small humanoid base land speed by 5 ft., from 30 ft. to 25 ft. Goblin otherwise remains Small-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Goblin racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Goblin compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - goblin
+  size: sm
+  speeds:
+    land: 25
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Uncommon
+  - Elyndor
+type: race

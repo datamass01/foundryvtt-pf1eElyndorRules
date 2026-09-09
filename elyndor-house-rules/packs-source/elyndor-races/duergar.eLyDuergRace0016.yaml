@@ -1,0 +1,54 @@
+_id: eLyDuergRace0016
+_key: '!items!eLyDuergRace0016'
+img: icons/commodities/treasure/statue-bust-stone-grey.webp
+name: Duergar (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: true
+    noHeavyEncumbrance: true
+    mediumArmorFullSpeed: true
+    heavyArmorFullSpeed: true
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: a3d9hgo4
+    formula: '2'
+    target: con
+    type: racial
+  - _id: bm9hcp4n
+    formula: '2'
+    target: wis
+    type: racial
+  - _id: yg1mzhwm
+    formula: '-4'
+    target: cha
+    type: racial
+  contextNotes:
+  - target: cmd
+    text: +[[4]] Racial vs Bull Rush and Trip while on ground
+  creatureSubtypes:
+  - dwarf
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Duergar; the Elyndor house rule reduces medium humanoid base land speed by 10 ft., from 20 ft. to 10 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces medium humanoid base land speed by 10 ft., from 20 ft. to 10 ft. Duergar otherwise remains Medium-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Duergar racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Duergar compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  - dwarven
+  - undercommon
+  size: med
+  speeds:
+    land: 10
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Darklands
+  - Elyndor
+type: race

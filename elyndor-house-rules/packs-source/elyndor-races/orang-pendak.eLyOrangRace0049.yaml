@@ -1,0 +1,56 @@
+_id: eLyOrangRace0049
+_key: '!items!eLyOrangRace0049'
+img: systems/pf1/icons/skills/blue_26.jpg
+name: Orang-Pendak (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: 8puu0hv7
+    formula: '2'
+    target: str
+    type: racial
+  - _id: rztjhpdv
+    formula: '2'
+    target: wis
+    type: racial
+  - _id: knd1ob9o
+    formula: '-2'
+    target: int
+    type: racial
+  contextNotes:
+  - target: skill.clm
+    text: +[[2]] Racial in Jungles and Forests
+  - target: skill.ste
+    text: +[[2]] Racial in Jungles and Forests
+  - target: skill.han
+    text: +[[4]] Racial vs. Apes and Monkeys
+  creatureSubtypes:
+  - Orang-Pendak
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Orang-Pendak; the Elyndor house rule reduces small humanoid base land speed by 5 ft., from 30 ft. to 25 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces small humanoid base land speed by 5 ft., from 30 ft. to 25 ft. Orang-Pendak otherwise remains Small-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Orang-Pendak racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Orang-Pendak compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - sasquatch
+  size: sm
+  speeds:
+    land: 25
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Bestiary
+  - Elyndor
+type: race

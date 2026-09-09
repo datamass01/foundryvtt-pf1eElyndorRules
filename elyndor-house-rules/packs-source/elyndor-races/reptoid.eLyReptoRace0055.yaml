@@ -1,0 +1,55 @@
+_id: eLyReptoRace0055
+_key: '!items!eLyReptoRace0055'
+img: systems/pf1/icons/feats/gorgons-fist.jpg
+name: Reptoid (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: 7xfg3gn5
+    formula: '2'
+    target: str
+    type: racial
+  - _id: zyw7cn18
+    formula: '2'
+    target: cha
+    type: racial
+  - _id: pe20zpoa
+    formula: '-2'
+    target: dex
+    type: racial
+  contextNotes:
+  - target: allSavingThrows
+    text: +[[2]] Racial bonus against mind-affecting effects and poison.
+  creatureSubtypes:
+  - shapechanger
+  - Reptoid
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Reptoid; the Elyndor house rule reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Reptoid otherwise remains Medium-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Reptoid racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Reptoid compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  - Reptoid
+  size: med
+  speeds:
+    land: 20
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Alien
+  - Bestiary
+  - Elyndor
+type: race

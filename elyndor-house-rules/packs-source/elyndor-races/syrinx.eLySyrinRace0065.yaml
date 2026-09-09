@@ -1,0 +1,53 @@
+_id: eLySyrinRace0065
+_key: '!items!eLySyrinRace0065'
+img: systems/pf1/icons/skills/red_26.jpg
+name: Syrinx (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: atvhssz0
+    formula: '2'
+    target: wis
+    type: racial
+  - _id: m66aoz86
+    formula: '-2'
+    target: dex
+    type: racial
+  contextNotes:
+  - target: skill.per
+    text: +[[2]] Racial at Night
+  - target: skill.ste
+    text: +[[2]] Racial at Night
+  - target: allSavingThrows
+    text: +[[2]] Racial vs. Mind-Affecting Effects
+  creatureSubtypes:
+  - Syrinx
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Syrinx; the Elyndor house rule reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Syrinx otherwise remains Medium-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Syrinx racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Syrinx compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - syrinx
+  size: med
+  speeds:
+    land: 20
+    fly: 60
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Western (Arcadia)
+  - Bestiary
+  - Elyndor
+type: race

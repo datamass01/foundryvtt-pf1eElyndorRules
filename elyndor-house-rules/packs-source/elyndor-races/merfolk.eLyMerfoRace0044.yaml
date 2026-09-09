@@ -1,0 +1,55 @@
+_id: eLyMerfoRace0044
+_key: '!items!eLyMerfoRace0044'
+img: icons/skills/trades/music-singing-voice-blue.webp
+name: Merfolk (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: gbokvl5j
+    formula: '2'
+    target: dex
+    type: racial
+  - _id: 1xfu4n17
+    formula: '2'
+    target: con
+    type: racial
+  - _id: wmze7xbc
+    formula: '2'
+    target: cha
+    type: racial
+  - _id: tjbuji88
+    formula: '2'
+    target: nac
+    type: base
+  creatureSubtypes:
+  - aquatic
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Merfolk; the Elyndor house rule reduces medium humanoid base land speed by 10 ft., floored at a minimum of 5 ft.; core Merfolk's land speed of 5 ft. is already at or below that floor, so no change results here. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces medium humanoid base land speed by 10 ft., floored at a minimum of 5 ft.; core Merfolk''s land speed of 5 ft. is already at or below that floor, so no change results here. Merfolk otherwise remains Medium-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Merfolk racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Merfolk compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  - aquan
+  size: med
+  speeds:
+    land: 5
+    fly: null
+    flyManeuverability: ''
+    swim: 50
+    climb: null
+    burrow: null
+  tags:
+  - Rare
+  - Azlant
+  - Elyndor
+type: race

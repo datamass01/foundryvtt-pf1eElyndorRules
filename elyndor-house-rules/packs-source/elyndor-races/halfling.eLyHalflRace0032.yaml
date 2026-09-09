@@ -1,0 +1,70 @@
+_id: eLyHalflRace0032
+_key: '!items!eLyHalflRace0032'
+img: systems/pf1/icons/races/halfling.png
+name: Halfling (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: b17x28cb
+    formula: '2'
+    target: dex
+    type: racial
+  - _id: 6qmpu6j7
+    formula: '2'
+    target: cha
+    type: racial
+  - _id: 4qkk6fpi
+    formula: '-2'
+    target: str
+    type: racial
+  - _id: 6nb88ge9
+    formula: '2'
+    target: skill.per
+    type: racial
+  - _id: bh8e3xbn
+    formula: '1'
+    target: allSavingThrows
+    type: racial
+  - _id: 6mozrq07
+    formula: '2'
+    target: skill.acr
+    type: racial
+  - _id: 86l4gjk2
+    formula: '2'
+    target: skill.clm
+    type: racial
+  contextNotes:
+  - target: allSavingThrows
+    text: +[[2]] Racial vs Fear
+  creatureSubtypes:
+  - halfling
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Halfling; the Elyndor house rule reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Halfling otherwise remains Small-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Halfling racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Halfling compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  - halfling
+  size: sm
+  speeds:
+    land: 15
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Core
+  - Western (Arcadia)
+  - Elyndor
+type: race

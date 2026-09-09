@@ -1,0 +1,77 @@
+_id: eLySvirfRace0063
+_key: '!items!eLySvirfRace0063'
+img: icons/magic/defensive/illusion-evasion-echo-purple.webp
+name: Svirfneblin (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: mps9kvp4
+    formula: '2'
+    target: dex
+    type: racial
+  - _id: lmlhmhnf
+    formula: '2'
+    target: wis
+    type: racial
+  - _id: 91bn87xd
+    formula: '-2'
+    target: str
+    type: racial
+  - _id: kf79isp5
+    formula: '-4'
+    target: cha
+    type: racial
+  - _id: bfzwj0mq
+    formula: '2'
+    target: ac
+    type: dodge
+  - _id: 9cako6ob
+    formula: '2'
+    target: allSavingThrows
+    type: racial
+  - _id: mdq62a5v
+    formula: '2'
+    target: skill.ste
+    type: racial
+  - _id: x6v17a68
+    formula: '2'
+    target: skill.crf
+    type: racial
+  - _id: lh8ng90w
+    formula: '2'
+    target: skill.per
+    type: racial
+  contextNotes:
+  - target: attack
+    text: +[[1]] vs. Reptilian and Dwarf
+  creatureSubtypes:
+  - gnome
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Svirfneblin; the Elyndor house rule reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces small humanoid base land speed by 5 ft., from 20 ft. to 15 ft. Svirfneblin otherwise remains Small-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Svirfneblin racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Svirfneblin compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - gnome
+  - undercommon
+  size: sm
+  speeds:
+    land: 15
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Darklands
+  - Elyndor
+type: race

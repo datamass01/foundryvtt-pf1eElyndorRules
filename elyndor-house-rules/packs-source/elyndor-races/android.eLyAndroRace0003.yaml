@@ -1,0 +1,63 @@
+_id: eLyAndroRace0003
+_key: '!items!eLyAndroRace0003'
+img: systems/pf1/icons/races/android.png
+name: Android (Elyndor)
+system:
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes:
+  - _id: 3pg0ijk0
+    formula: '2'
+    target: dex
+    type: racial
+  - _id: iau35wns
+    formula: '2'
+    target: int
+    type: racial
+  - _id: 5pvv33rp
+    formula: '-2'
+    target: cha
+    type: racial
+  - _id: ivu3rr3d
+    formula: '2'
+    target: skill.per
+    type: racial
+  - _id: 0jdv2k33
+    formula: '-4'
+    target: skill.sen
+    type: racial
+  contextNotes:
+  - target: allSavingThrows
+    text: |-
+      +[[4]] Racial vs Mind Affecting, Paralysis, Poison, Stun
+      Immune to Disease, Sleep and Emotion-based Effects
+  creatureSubtypes:
+  - android
+  creatureTypes:
+  - humanoid
+  description:
+    summary: Standard Pathfinder Android; the Elyndor house rule reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Otherwise identical to core.
+    value: '<p><strong>Elyndor House Rule</strong>: Docs/house-rules §8.1 reduces medium humanoid base land speed by 10 ft., from 30 ft. to 20 ft. Android otherwise remains Medium-size for all other purposes (carrying capacity, weapon damage, reach, etc.), and every other standard Android racial trait (ability adjustments, senses, resistances, weapon/armor familiarity, etc.) is unchanged from core and reproduced mechanically above via the same changeFlags/changes/contextNotes as pf1''s own core Android compendium entry (see that entry, in the pf1 system''s own Races compendium, for the full racial-traits flavor text this entry intentionally omits to avoid maintaining two copies of the same content).</p>'
+  languages:
+  - common
+  size: med
+  speeds:
+    land: 20
+    fly: null
+    flyManeuverability: ''
+    swim: null
+    climb: null
+    burrow: null
+  tags:
+  - Rare
+  - Alien
+  - Elyndor
+type: race
