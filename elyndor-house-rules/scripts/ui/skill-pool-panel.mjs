@@ -13,7 +13,7 @@
  */
 import { MODULE_ID } from "../const.mjs";
 import { getPrimaryClass } from "../class-roles.mjs";
-import { skillPointPools, POOL_ABILITIES, otherBonusSkillRanks } from "../lib/formulas.mjs";
+import { skillPointPools, POOL_ABILITIES, otherBonusSkillRanks, favoredClassSkillBonus } from "../lib/formulas.mjs";
 
 const TEMPLATE_PATH = `modules/${MODULE_ID}/templates/skill-pool-panel.hbs`;
 const INJECTED_CLASS = `${MODULE_ID}-skill-pool-panel`;
@@ -59,10 +59,18 @@ async function onRenderCharacterSheet(app, html) {
   const perLevelPools = skillPointPools(actor);
   const genericPerLevel = perLevelPools.con + perLevelPools.flat;
   // Bonus skill ranks from race features, feats, class features, or the
-  // sheet's manual bonus formula (Human Skilled, etc.) are unrestricted and
-  // already career-total in their own formulas; do not multiply by
-  // characterLevel.
-  const genericCareerTotal = genericPerLevel * characterLevel + otherBonusSkillRanks(actor);
+  // sheet's manual bonus formula (Human Skilled, etc.), and Favored Class
+  // Bonus points banked into skills, are all unrestricted and already
+  // career-total in their own formulas; do not multiply by characterLevel.
+  // Folding FCB in here (on top of what this row was already showing) is
+  // what keeps this panel's grand total equal to the Skills tab's own
+  // "Skill Ranks" total (see changes/skill-points-total.mjs's
+  // `registerSkillRankSuppression`, which is the other half of that parity
+  // — it makes pf1's native per-class formula contribute nothing so the
+  // header total is exactly ability-pools + flat + otherBonus + FCB, same
+  // as this panel computes).
+  const genericCareerTotal =
+    genericPerLevel * characterLevel + otherBonusSkillRanks(actor) + favoredClassSkillBonus(actor);
 
   const restrictedRows = POOL_ABILITIES.filter((id) => id !== "con").map((abilityId) => {
     const careerTotal = perLevelPools[abilityId] * characterLevel;

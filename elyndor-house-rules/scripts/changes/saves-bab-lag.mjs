@@ -31,6 +31,7 @@
  */
 import { getPrimaryClass, getSecondaryClass, isSecondaryClass, laggedLevel } from "../class-roles.mjs";
 import { compareDualClassSave, recomputeClassSaveAtLevel } from "../lib/formulas.mjs";
+import { wrapAfter, wrapOwnAfter } from "../lib/wrap.mjs";
 
 /** Fort / Ref / Will — same keys pf1 uses on class items and Change targets. */
 const SAVE_IDS = /** @type {const} */ (["fort", "ref", "will"]);
@@ -41,42 +42,6 @@ const SECOND_SAVE_ABILITY = /** @type {const} */ ({
   ref: "int",
   will: "cha",
 });
-
-/**
- * Call `after` once the original method returns. Assigns an own property
- * on `proto` so inherited methods on a parent class are left intact.
- *
- * @param {object} proto
- * @param {string} method
- * @param {(this: object, ...args: unknown[]) => void} after
- */
-function wrapAfter(proto, method, after) {
-  const original = proto?.[method];
-  if (typeof original !== "function") return;
-  proto[method] = function (...args) {
-    const result = original.apply(this, args);
-    after.call(this, ...args);
-    return result;
-  };
-}
-
-/**
- * Walk the prototype chain from `start` and wrap the first own `method`.
- *
- * @param {object} start
- * @param {string} method
- * @param {(this: object, ...args: unknown[]) => void} after
- */
-function wrapOwnAfter(start, method, after) {
-  let proto = start;
-  while (proto && proto !== Object.prototype) {
-    if (Object.prototype.hasOwnProperty.call(proto, method)) {
-      wrapAfter(proto, method, after);
-      return;
-    }
-    proto = Object.getPrototypeOf(proto);
-  }
-}
 
 /**
  * §1.4 / §3.1 — Secondary class awards no BAB; its save bases use the
