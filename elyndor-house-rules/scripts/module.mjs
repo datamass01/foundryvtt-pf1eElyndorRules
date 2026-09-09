@@ -12,7 +12,11 @@ import { checkLockstep } from "./class-roles.mjs";
 import { applyCharacterLevelFix } from "./changes/character-level.mjs";
 import { applySavesAndBabChanges, registerSecondaryBabSuppression } from "./changes/saves-bab-lag.mjs";
 import { applyFeatCountChange } from "./changes/feats.mjs";
-import { applySkillPointsChange } from "./changes/skill-points-total.mjs";
+import {
+  applySkillPointsChange,
+  registerSkillRankSuppression,
+  registerSkillTooltipCleanup,
+} from "./changes/skill-points-total.mjs";
 import { applyMovementChanges } from "./changes/movement.mjs";
 import { registerClassRoleToggle } from "./ui/class-role-toggle.mjs";
 import { registerClassRoleColumn } from "./ui/class-role-column.mjs";
@@ -34,10 +38,14 @@ Hooks.once("quenchReady", async () => {
 });
 
 Hooks.once("setup", () => {
-  // pf1.config (== CONFIG.PF1) is populated by pf1's own "init" hook, so
-  // this can only be safely mutated from "setup" onward, not from our own
-  // "init" above.
+  // pf1.config (== CONFIG.PF1) and pf1.applications are populated by pf1's
+  // own "init" hook, so both can only be safely read/mutated from "setup"
+  // onward, not from our own "init" above.
   registerPointBuyTier();
+  // Prototype-wraps pf1.applications.actor.ActorSheetPFCharacter, same
+  // "setup"-not-"init" reasoning as registerPointBuyTier() above.
+  registerSkillRankSuppression();
+  registerSkillTooltipCleanup();
 });
 
 /**

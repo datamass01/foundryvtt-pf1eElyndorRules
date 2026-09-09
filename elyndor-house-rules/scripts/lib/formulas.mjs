@@ -170,6 +170,46 @@ export function otherBonusSkillRanks(actor) {
 }
 
 /**
+ * Career-total Favored Class Bonus points already banked into skills
+ * (each eligible class's own `system.fc.skill.value`, set by whatever the
+ * player picked at each level-up). pf1 adds this natively to the Skills
+ * tab's `skillRanks.allowed` total (base-character-sheet.mjs `_prepareSkills`)
+ * on top of the per-class base formula this module replaces — it is NOT
+ * part of the six ability-pool formulas, but it IS unrestricted same as
+ * the "con"/"flat" pools, so the skill-pool panel folds it into Generic
+ * (see ui/skill-pool-panel.mjs) so the panel's total and the header's
+ * `skillRanks.allowed` stay equal even when FCB-into-skills is in play.
+ *
+ * CORRECTION (verified live): RefCode's `base-character-sheet.mjs` checks
+ * `pf1.config.favoredClassTypes.has(subType)` (a Set), but the installed
+ * v11.11 build's actual `pf1.config.favoredClassTypes` is a plain Array
+ * (`.includes`) — same family of RefCode-vs-shipped-build drift flagged
+ * throughout this module. `includesFavoredClassType` below checks for
+ * either shape so this keeps working if a future pf1 update switches back
+ * to a Set.
+ *
+ * @param {pf1.documents.ActorPF} actor
+ * @returns {number}
+ */
+export function favoredClassSkillBonus(actor) {
+  let total = 0;
+  for (const cls of actor?.itemTypes?.class ?? []) {
+    if (!includesFavoredClassType(pf1.config.favoredClassTypes, cls.system.subType)) continue;
+    total += cls.system.fc?.skill?.value || 0;
+  }
+  return total;
+}
+
+/**
+ * @param {Set<string>|string[]|undefined} collection
+ * @param {string} value
+ */
+function includesFavoredClassType(collection, value) {
+  if (!collection) return false;
+  return typeof collection.has === "function" ? collection.has(value) : collection.includes(value);
+}
+
+/**
  * pf1's own skill id for Intimidate is literally `"int"` — a different
  * namespace than (and easy to confuse with) the Intelligence ABILITY id
  * `"int"`. `pf1.config.skills.int.ability` is `"cha"` by default; this
