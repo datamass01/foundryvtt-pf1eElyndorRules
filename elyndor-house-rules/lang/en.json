@@ -25,6 +25,7 @@
     "Info": {
       "RoleReassigned": "Moved the Elyndor class role from {from} to {to} (only one class may hold a given role)."
     },
+    "SkillBonusConversion": "Skill Bonus Conversion (Elyndor)",
     "SkillPools": {
       "Summary": "Elyndor Skill Point Pools (advisory)",
       "Ability": "Ability",

@@ -137,6 +137,9 @@ below for what's still open.
 | Dwarf base speed 15 ft. (Small-style carve-out despite Medium size) | `packs-source/elyndor-races/dwarf.eLyDwarfRace001a.yaml` |
 | Lythari (new custom race: Fey lycanthrope elf-kin) | `packs-source/elyndor-races/lythari.eLyLythariRace1a.yaml` |
 | Run feat +5 ft. | `packs-source/elyndor-feats/run.eLyRunFeat0001aa.yaml` |
+| Versatile Channeler (Elyndor): drops the original (Ultimate Magic) neutral-alignment prerequisite — good and evil channelers may take it too | `packs-source/elyndor-feats/versatile-channeler.eLyVersaChan0001.yaml` |
+| Vindicator's Stability (Elyndor, new feat, no published source): Antipaladin + Versatile Channeler (Elyndor) prereqs; lets touch of corruption also be used exactly as a paladin's lay on hands (heal a living creature, not just harm/heal-undead), same daily use pool | `packs-source/elyndor-feats/vindicators-stability.eLyVindicStab001.yaml` |
+| Skill Bonus Conversion (§2.3): non-rank/non-ability skill bonuses summed and converted — 2-5 → +2, 6-10 → Advantage (2d20kh1), 11+ → both | `scripts/changes/skill-bonus-conversion.mjs` |
 | Quench test scaffold | `test/dual-class.test.mjs` |
 
 **Note:** `packs-source/` holds the human-edited yaml source (renamed here
@@ -260,6 +263,154 @@ satisfied by vanilla pf1 — confirm with the GM before authoring a duplicate.
    at the expected level, and confirm a vanilla (non-overridden) Druid/Ranger
    still offers the real companion choice — isolating the change to this
    module rather than a global pf1 effect.
+
+7. **RESOLVED (verified live) — Skill Bonus Conversion (§2.3).** Both
+   halves confirmed live on 2026-09-09 against the `pf1e-test-bed` world
+   (see the plan's "Phase 8 Spike Progress" section for the raw hook
+   findings). Live results, all against a cloned (never persisted) copy
+   of the Fighter+Sorc test actor:
+   - A skill with only its native +3 "Class Skill" bonus (total 3, tier
+     2-5): `mod` correctly reads with a flat **+2** replacing it — no
+     "Class Skill" line left in the tooltip, no phantom cancelling entry.
+   - The same skill plus a temporary +4 enhancement bonus (total 7, tier
+     6-10): **no flat bonus** applied, and rolling the skill for real
+     (`actor.rollSkill`) produced a genuine `2d20kh1` roll — confirmed via
+     the actual outgoing chat payload, two real die results, correct one
+     discarded.
+   - The same skill plus a temporary +8 insight bonus (total 11, tier
+     11+): **both** the flat +2 and Advantage applied together.
+   - A different skill with only a lone +1 trait bonus (total 1, below
+     the table's floor): left **completely untouched** — still shows its
+     native +1, nothing suppressed, nothing converted.
+   - **A genuine timing bug was caught and fixed during this verification,
+     not just a naming mismatch**: the first implementation suppressed
+     Changes by deleting them from `actor.changes` during
+     `pf1AddDefaultChanges`, which looked right in isolation but silently
+     failed — live-diffing `actor.changes`'s contents before/after that
+     hook showed every entry gets a brand-new `_id` afterward, meaning the
+     whole Collection is discarded and rebuilt from items again later, so
+     the deletion never stuck (confirmed live: the suppressed Changes
+     still doubled up in the final `mod`). Fixed by moving suppression
+     into a `_prepareTypeChanges` wrap instead — the same method
+     `saves-bab-lag.mjs` already wraps for save suppression, and the point
+     at which the Changes array is actually near-final. See
+     `changes/skill-bonus-conversion.mjs`'s header for the full writeup.
+   - **Also confirmed through the real UI**, not just console/clone JSON
+     checks: set a real rank on the persisted test actor's Bluff (native
+     Class Skill +3 alone, tier 2-5), opened its actual character sheet,
+     and hovered the Skills-tab tooltip — clean breakdown (`Skill Ranks
+     +1`, `Skill Bonus Conversion (Elyndor) +2`, `Charisma +2`), no
+     "Class Skill" line. Added a real temporary +8 insight item (total 11,
+     tier 11+) and confirmed the same clean tooltip, no "Temp Insight"
+     line either. Then clicked the sheet's own Bluff roll icon for a real
+     roll through the dialog: the chat card expands to show `2d20kh1`,
+     both die results (4 discarded, 16 kept), and the identical clean
+     source breakdown, total 16+1+2+2=21. All scratch state (temp item,
+     rank, chat message) was removed afterward, leaving the actor as
+     found.
+   - **Not yet handled**: subskills (Craft/Profession/Perform instances)
+     use a different Change-target shape than the fixed base-skill list
+     this file walks — skipped silently for now, unverified.
+   - **CRITICAL CORRECTION (session of 2026-09-09, found via a real user
+     bug report, not another automated pass) — the feature above didn't
+     actually work in real play**, despite every verification bullet above
+     genuinely passing. Two separate bugs, both now fixed:
+     1. **A skill bonus applied via a Change targeting ALL skills at once
+        (`target: "skills"`, plural — the same mechanism pf1's own native
+        "Wound Threshold"/"Negative Levels" penalties use, and a natural
+        choice when authoring a Buff through the Change editor) was never
+        detected at all** — every verification pass above happened to use
+        a skill-*specific* target (`skill.~<id>`), which the original code
+        exclusively matched. Fixed by unrolling any `target: "skills"`
+        Change into one independent clone per skill before the per-skill
+        pass runs (`unrollGlobalSkillChanges` in
+        `changes/skill-bonus-conversion.mjs`) — a global bonus can't be
+        suppressed in place the way a skill-specific one is, since
+        deleting the single shared Change would silently remove it from
+        every OTHER skill's total too.
+     2. **Far more serious: the suppression wrap was registered from the
+        wrong hook and silently never took effect in real play at all**,
+        global-target bug or not. It was registered from `Hooks.once("setup")`
+        — matching this module's usual rule that anything touching
+        `pf1.config`/`pf1.applications` needs "setup", since "init" is too
+        early for those. But this wrap only touches `CONFIG.Actor.*`,
+        available even at "init" — and `_prepareTypeChanges` (confirmed
+        live) is NOT part of the normal per-render prepare cycle: for a
+        given actor it effectively runs once, very early — before "setup"
+        fires — and its result is then cached. Neither a fresh page load
+        nor opening the actor sheet ever re-triggers it; only an explicit
+        `actor.reset()+prepareData()` does. Every manual verification
+        above used exactly that pattern (or created/deleted a test item,
+        which has the same effect) without realizing it was the only
+        reason the fix appeared to work — in genuinely untouched real
+        play, the wrap installed itself *after* that one early call had
+        already happened and been cached, so every skill bonus kept
+        applying at its raw, unconverted value, every time, for every
+        character. Fixed by moving the registration to `Hooks.once("init")`,
+        alongside `registerSecondaryBabSuppression` (which wraps the same
+        method, from the same hook, and was the live proof this earlier
+        timing actually works). **Re-verified after the fix on two
+        separate genuinely fresh page loads** (full reload, join, first
+        read immediately on `ready`, zero prior actor interaction) — both
+        `actor.system.skills.dip.mod` and the actual rendered Skills-tab
+        tooltip on the persisted test actor now read correctly on the very
+        first check.
+     - **Lesson for future verification passes in this module**: a
+       suppression wrap's live-verified correctness has to be checked
+       against a **cold, untouched load** — a manual `actor.reset()` or
+       any item create/delete before checking can mask exactly this class
+       of registration-timing bug.
+
+8. **RESOLVED (verified live) — the roll dialog's own "Situational Bonus"
+   field bypassed §2.3 entirely.** A second real user bug report (session
+   of 2026-09-09, same day as #7): typing a plain "+5" into the Roll Skill
+   Check dialog's "Situational Bonus" field applied it as a raw,
+   unconverted modifier — every persistent Change was suppressed and
+   converted correctly, but this one roll-time input path was never
+   touched by any of it. Root cause: that field's value never becomes a
+   Change at all — it's appended directly to the roll's own term list,
+   entirely outside `actor.changes`/`_prepareTypeChanges` (confirmed live:
+   `options.parts`, the same array every tracked persistent contributor
+   flows through, never contains it). Fixed in `handlePreD20Roll`: every
+   tracked contributor's `NumericTerm` always carries a non-empty
+   `flavor` (verified live across every skill/Change combination this
+   module has ever tested), so an *unflavored* numeric term is the one
+   reliable signal a term came from the dialog instead. When found, its
+   value is combined with the skill's cached persistent total (now cached
+   per-skill on the actor alongside the existing Advantage set) and the
+   whole thing is reconverted for that roll only — never written back to
+   the sheet.
+   - **A second, sharper bug was caught during THIS fix's own
+     verification** (not a leftover from #7): the first version of the
+     roll-time fold only stripped a *stale flat conversion term* before
+     inserting the freshly-recomputed one — it left any *raw, still-
+     unconverted* persistent contributor (e.g. a global buff whose
+     persistent total alone was below the table's floor) sitting in the
+     roll, where it then double-counted alongside the newly-added flat
+     bonus once the situational addition pushed the combined total over
+     the floor. Live-caught via the exact repro: Acrobatics with a
+     persisted `RadicalTestBuff` (+1, below floor, so applying raw) plus
+     a `+12` situational bonus produced `1d20 + 1[Dexterity] +
+     1[RadicalTestBuff] + 2[Skill Bonus Conversion (Elyndor)]` — the
+     `RadicalTestBuff` term should not have survived. Fixed by rebuilding
+     `roll.terms` from scratch on every fold (`recombineSkillRoll`)
+     instead of splicing specific indices: every term whose flavor is one
+     of the skill's own cached §2.3-relevant flavors (not just the flat
+     conversion term) is dropped, alongside the raw situational term(s),
+     before the fresh flat term (if any) is appended. Re-verified live
+     after this fix: same repro now correctly produces `2d20kh1 +
+     1[Dexterity] + 2[Skill Bonus Conversion (Elyndor)]`, total 16, no
+     leftover `RadicalTestBuff` line.
+   - Also verified live in the same pass: a plain roll with no situational
+     input is completely unaffected (byte-identical formula to before this
+     fix existed); a dice-based situational bonus (e.g. `1d6`, which the
+     field's own placeholder documents as supported) is left completely
+     untouched rather than mishandled — there's nothing to statically
+     convert before dice are rolled, and a flavored sub-part of a mixed
+     formula (`2[Aid]`) would be indistinguishable from a real tracked
+     Change, so this is an explicit, documented scope boundary rather
+     than a gap: only a bare, dice-free numeric situational entry folds
+     into the conversion.
 
 ## Dev setup
 
