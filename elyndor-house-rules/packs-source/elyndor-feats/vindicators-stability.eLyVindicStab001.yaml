@@ -1,0 +1,46 @@
+_id: eLyVindicStab001
+_key: '!items!eLyVindicStab001'
+img: systems/pf1/icons/feats/extra-lay-on-hands.jpg
+name: Vindicator's Stability (Elyndor)
+system:
+  # pf1 v11.11: changes/contextNotes are arrays; changeFlags is a boolean map.
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes: []
+  contextNotes: []
+  description:
+    summary: Touch of corruption can also be used exactly as lay on hands (Elyndor, new)
+    value: >-
+      <p><em>Your corrupted touch steadies as much as it wounds.</em></p>
+      <p><strong>Prerequisites</strong>:
+      @UUID[Compendium.pf1.classes.Item.uynVENa0deVdmf53]{Antipaladin} (touch
+      of corruption class feature),
+      @UUID[Compendium.elyndor-house-rules.elyndor-feats.Item.eLyVersaChan0001]{Versatile
+      Channeler (Elyndor)}.</p>
+      <p><strong>Benefit</strong>: Each time you use your
+      @UUID[Compendium.pf1.class-abilities.Item.aabyB4FV9OH7hcYZ]{touch of
+      corruption} class feature, you may instead use it exactly as a
+      paladin's own
+      @UUID[Compendium.pf1.class-abilities.Item.WhE4j0Jc82npdMCP]{lay on
+      hands} class feature — healing a living creature (yourself or a
+      willing ally) you touch for 1d6 hit points per two antipaladin levels
+      you possess, as a standard action (a swift action if you target
+      yourself) — in addition to touch of corruption's normal options
+      (dealing damage to a living creature with a melee touch attack, or
+      healing undead). This doesn't grant any additional uses per day; it's
+      the same pool of uses touch of corruption already has.</p>
+      <p><strong>Elyndor House Rule</strong>: New feat, not from a published
+      source — see Docs/house-rules §6 Feats.</p>
+  sources: []
+  subType: feat
+  tags:
+    - General
+type: feat

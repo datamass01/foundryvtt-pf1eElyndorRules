@@ -1,0 +1,41 @@
+_id: eLyVersaChan0001
+_key: '!items!eLyVersaChan0001'
+img: systems/pf1/icons/feats/alignment-channel.jpg
+name: Versatile Channeler (Elyndor)
+system:
+  # pf1 v11.11: changes/contextNotes are arrays; changeFlags is a boolean map.
+  changeFlags:
+    immuneToMorale: false
+    loseDexToAC: false
+    noMediumEncumbrance: false
+    noHeavyEncumbrance: false
+    mediumArmorFullSpeed: false
+    heavyArmorFullSpeed: false
+    lowLightVision: false
+    seeInvisibility: false
+    seeInDarkness: false
+  changes: []
+  contextNotes: []
+  description:
+    summary: Choose positive or negative energy each time you channel energy (Elyndor — any alignment)
+    value: >-
+      <p><em>You are a conduit for both positive and negative energy.</em></p>
+      <p><strong>Prerequisites</strong>: Channel energy class feature.</p>
+      <p><strong>Benefit</strong>: Rather than being locked into a single
+      energy type, you decide whether to channel positive or negative energy
+      each time you use your channel energy class feature.</p>
+      <p><strong>Elyndor House Rule</strong>: The original (Ultimate Magic)
+      version of this feat requires a neutral alignment to take it — a good
+      channeler can normally only channel positive energy and an evil
+      channeler only negative, so only a neutral character ever has a choice
+      to lock in. This Elyndor version drops that alignment prerequisite
+      entirely: a good or evil channeler may take this feat too, gaining the
+      same per-use choice of energy type a neutral channeler would (Docs/house-rules
+      §6 Feats).</p>
+  sources:
+    - id: PZO1117
+      pages: '20'
+  subType: feat
+  tags:
+    - General
+type: feat

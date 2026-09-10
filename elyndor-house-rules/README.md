@@ -137,6 +137,8 @@ below for what's still open.
 | Dwarf base speed 15 ft. (Small-style carve-out despite Medium size) | `packs-source/elyndor-races/dwarf.eLyDwarfRace001a.yaml` |
 | Lythari (new custom race: Fey lycanthrope elf-kin) | `packs-source/elyndor-races/lythari.eLyLythariRace1a.yaml` |
 | Run feat +5 ft. | `packs-source/elyndor-feats/run.eLyRunFeat0001aa.yaml` |
+| Versatile Channeler (Elyndor): drops the original (Ultimate Magic) neutral-alignment prerequisite — good and evil channelers may take it too | `packs-source/elyndor-feats/versatile-channeler.eLyVersaChan0001.yaml` |
+| Vindicator's Stability (Elyndor, new feat, no published source): Antipaladin + Versatile Channeler (Elyndor) prereqs; lets touch of corruption also be used exactly as a paladin's lay on hands (heal a living creature, not just harm/heal-undead), same daily use pool | `packs-source/elyndor-feats/vindicators-stability.eLyVindicStab001.yaml` |
 | Skill Bonus Conversion (§2.3): non-rank/non-ability skill bonuses summed and converted — 2-5 → +2, 6-10 → Advantage (2d20kh1), 11+ → both | `scripts/changes/skill-bonus-conversion.mjs` |
 | Quench test scaffold | `test/dual-class.test.mjs` |
 
