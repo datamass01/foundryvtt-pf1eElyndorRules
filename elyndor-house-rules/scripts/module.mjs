@@ -18,6 +18,11 @@ import {
   registerSkillTooltipCleanup,
 } from "./changes/skill-points-total.mjs";
 import { applyMovementChanges } from "./changes/movement.mjs";
+import {
+  registerSkillBonusSuppression,
+  handlePreActorRollSkill,
+  handlePreD20Roll,
+} from "./changes/skill-bonus-conversion.mjs";
 import { registerClassRoleToggle } from "./ui/class-role-toggle.mjs";
 import { registerClassRoleColumn } from "./ui/class-role-column.mjs";
 import { registerSkillPoolPanel } from "./ui/skill-pool-panel.mjs";
@@ -25,6 +30,23 @@ import { registerSkillPoolPanel } from "./ui/skill-pool-panel.mjs";
 Hooks.once("init", () => {
   registerSettings();
   registerSecondaryBabSuppression();
+  // §2.3 numeric half — MUST be registered here, not from "setup" below,
+  // despite both wrapping the same `_prepareTypeChanges` method as
+  // registerSecondaryBabSuppression() above. Verified live (session of
+  // 2026-09-09): `_prepareTypeChanges` is NOT part of the normal per-
+  // render prepare cycle — for a given actor it effectively runs once,
+  // very early (before "setup" fires), and its result is then cached;
+  // neither a fresh page load nor opening the actor sheet re-triggers it
+  // afterward, only an explicit `actor.reset()+prepareData()`. Registering
+  // this wrap from "setup" (as first written) meant it was installed
+  // *after* that one early call already happened, so it silently never
+  // took effect in normal play — bonuses kept applying raw, uncannily
+  // exactly reproducing a real user report. `registerSecondaryBabSuppression`
+  // wrapping the same method from `init` and working correctly (confirmed
+  // live: Fort save reflects its own `_prepareTypeChanges`-dependent
+  // max(Primary,Secondary) logic on a cold load) is the direct proof this
+  // earlier timing is required, not just sufficient.
+  registerSkillBonusSuppression();
   registerClassRoleToggle();
   registerClassRoleColumn();
   registerSkillPoolPanel();
@@ -81,6 +103,15 @@ Hooks.on("pf1AddDefaultChanges", (actor, changes) => {
   applySkillPointsChange(actor, changes);
   applyMovementChanges(actor, changes);
 });
+
+/**
+ * §2.3 Advantage half — see changes/skill-bonus-conversion.mjs's header
+ * for the full live-verified mechanism. Both hook names/signatures
+ * confirmed against the installed pf1 v11.11 build's own `pf1.js` bundle
+ * (session of 2026-09-09), not RefCode.
+ */
+Hooks.on("pf1PreActorRollSkill", handlePreActorRollSkill);
+Hooks.on("pf1PreD20Roll", handlePreD20Roll);
 
 /**
  * Advisory-only safety net: warn (never block) if a set-up Primary/

@@ -1,0 +1,362 @@
+/**
+ * §2.3 — Skill Bonus Conversion (Non-Ability Modifiers).
+ *
+ * Rule (Docs/house-rules/character-creation-and-system-rules.md §2.3):
+ * ranks and the ability modifier apply to a skill normally; every OTHER
+ * bonus a character would get from class benefits, feats, magic items, or
+ * other sources is instead summed (per standard Pathfinder stacking
+ * rules) and converted through one table instead of applying directly:
+ *   2-5  -> +2 Skill Bonus
+ *   6-10 -> Advantage (roll 2d20, keep the higher result)
+ *   11+  -> +2 Skill Bonus & Advantage
+ * A total of 0-1 falls below the lowest tier and is left alone entirely
+ * (e.g. a single +1 trait bonus keeps applying as a plain +1).
+ *
+ * Two independent mechanisms, both live-verified against the installed
+ * pf1 v11.11 build before this file was written — see the plan's "Phase 8
+ * Spike Progress" section (session of 2026-09-09) for the raw findings.
+ *
+ * === NUMERIC HALF (applySkillBonusConversion) ===
+ * Every contributor to a skill's `mod` — including rank and the ability
+ * modifier — is modeled as an ordinary `ItemChange` targeting
+ * `skill.~<id>` (confirmed live: even the "Skill Ranks" and ability-mod
+ * lines show up as real Changes, unlike the native per-class skill-RANK
+ * total, which is bespoke procedural math with nothing to filter —
+ * contrast skill-points-total.mjs's header comment). That means there is
+ * no single native method to wrap-and-subtract a total from the way
+ * BAB/skill-ranks do it: the "other bonus" total has to be computed by
+ * walking the actor's own Changes and replicating pf1's bonus-type
+ * stacking (same-type bonuses take only the highest, except
+ * untyped/circumstance/dodge, which always stack).
+ *
+ * TIMING (verified live, and the reason this does NOT run from
+ * `pf1AddDefaultChanges` the way every other Elyndor Change does):
+ * `actor.changes` already looks fully populated by the time
+ * `pf1AddDefaultChanges` fires (114 entries, full per-skill breakdown
+ * included), and it IS the same Collection instance start to finish — but
+ * live-diffing its contents before/after that hook proved every entry's
+ * `_id` changes across the call, meaning the Collection gets entirely
+ * discarded and rebuilt from items again afterward. Deleting from it
+ * during `pf1AddDefaultChanges` is silently undone by that rebuild —
+ * confirmed live: a suppression there measurably computed the right
+ * total but the deleted Changes still doubled up in the final `mod`.
+ * The rebuild's OWN output, before Collection-ization, turns out to be
+ * exactly `saves-bab-lag.mjs`'s `_prepareTypeChanges(changes)` — the same
+ * method that file already wraps for save suppression — whose `changes`
+ * array argument (confirmed live, NOT the same object as `actor.changes`)
+ * is the actual near-final list Changes get applied from. So this file's
+ * suppression wraps that same method too (composes fine with the
+ * existing BAB/save wrap — `wrapOwnAfter` chains correctly across
+ * multiple callers) instead of hooking `pf1AddDefaultChanges` at all.
+ *
+ * IMPORTANT: pf1's own `sourceInfo` breakdown for a skill's `mod` lists
+ * every CONTRIBUTING Change at its full nominal value even when stacking
+ * would exclude it from the real total (verified live: two "competence"
+ * Changes of +2 and +5 both showed their full nominal value in
+ * `sourceInfo`, even though only the +5 actually counted toward `mod`).
+ * So `mod - rank - abilityMod` is NOT a safe shortcut for "the total
+ * value of these modifiers" — besides double-counting non-stacking
+ * duplicates, it would also let ACP / Wound Threshold / Negative Level
+ * penalties (which this rule doesn't touch — only BONUSES convert) eat
+ * into the qualifying total. Only Changes that evaluate to a strictly
+ * positive value are ever candidates; everything else (ability mod, rank,
+ * ACP, and any other zero-or-negative contributor) is left completely
+ * alone and keeps applying exactly as pf1 already computes it.
+ *
+ * Once the total is known, the specific candidate Changes are spliced out
+ * of the `_prepareTypeChanges` array described above — before pf1 turns
+ * it into the Collection it applies to the skill's target — and one flat
+ * `+2` replacement Change is pushed into that same array when the table
+ * calls for it. Suppress at the source, never a cancelling negative
+ * Change — same rule this whole module follows (see saves-bab-lag.mjs's
+ * header for why).
+ *
+ * === ADVANTAGE HALF (handlePreActorRollSkill / handlePreD20Roll) ===
+ * No Change can express "roll 2d20 keep highest", so this hooks the
+ * actual roll instead. `pf1PreActorRollSkill(actor, rollOptions,
+ * skillId)` fires first and tags the shared `rollOptions` object
+ * (confirmed live, by reference identity, to be the SAME object later
+ * passed as `options` to `pf1PreD20Roll(roll, options)` — the only way to
+ * carry `skillId` forward, since the d20 hook itself never receives it).
+ * `pf1PreD20Roll` fires with an UNEVALUATED `D20RollPF`; when the tag
+ * says this skill qualifies, mutating its sole `Die` term
+ * (`number: 2, modifiers: ["kh1"]`) and then calling `roll.resetFormula()`
+ * — required, or the chat card keeps showing the stale `"1d20"` formula
+ * even though it genuinely rolled two dice, the same "phantom tooltip
+ * line" complaint this module treats as a real bug everywhere else —
+ * produces a correctly-evaluated, correctly-labeled 2d20-keep-highest
+ * roll (verified live: chat payload formula `"2d20kh1"`, two real die
+ * results, the losing one flagged `discarded`).
+ *
+ * NOT YET HANDLED: subskills (Craft/Profession/Perform instances) use a
+ * different Change-target shape than the fixed base-skill list this file
+ * walks (`skill.~<id>`) — unverified, skipped silently for now. See the
+ * module README's Known risks once this is exercised end-to-end.
+ */
+import { wrapOwnAfter } from "../lib/wrap.mjs";
+
+/**
+ * Bonus types that stack with themselves under standard Pathfinder rules
+ * (dodge and circumstance always stack; so does untyped, since it has no
+ * type to compare against) — verified live against two same-type
+ * "competence" Changes (+2 and +5): only the +5 counted toward `mod`,
+ * confirming every other type takes only its highest contributor.
+ */
+const STACKING_TYPES = new Set(["untyped", "circumstance", "dodge"]);
+
+/**
+ * pf1's own Armor Check Penalty Change formula, verified live on Climb
+ * (`target: "skill.~clm"`) — checked by formula rather than flavor text
+ * since formulas aren't localized. Redundant with the value>0 filter
+ * below (ACP is never positive) but kept explicit for clarity.
+ */
+const ACP_FORMULA = "-@attributes.acp.skill";
+
+/**
+ * §2.3's conversion table.
+ *
+ * @param {number} total
+ * @returns {{flat: number, advantage: boolean}}
+ */
+function convertSkillBonus(total) {
+  if (total >= 11) return { flat: 2, advantage: true };
+  if (total >= 6) return { flat: 0, advantage: true };
+  if (total >= 2) return { flat: 2, advantage: false };
+  return { flat: 0, advantage: false };
+}
+
+/**
+ * Walk the near-final `changes` array (see file header — NOT
+ * `actor.changes`) for one skill and split its contributors into "the
+ * total value of these [bonus] modifiers" (§2.3's own phrasing,
+ * stacking-resolved) and the exact Change objects that total came from
+ * (so the caller can splice out precisely those, and nothing else).
+ *
+ * @param {pf1.components.ItemChange[]} changes
+ * @param {string} skillId
+ * @param {string} ability - This skill's governing ability id (e.g. "dex").
+ * @param {object} rollData
+ * @returns {{total: number, included: pf1.components.ItemChange[]}}
+ */
+function collectSkillBonusChanges(changes, skillId, ability, rollData) {
+  const target = `skill.~${skillId}`;
+  const abilityLabel = pf1.config.abilities[ability];
+  const abilityFormula = `@abilities.${ability}.mod`;
+
+  const included = [];
+  let total = 0;
+  const highestByType = new Map();
+
+  for (const change of changes) {
+    if (change.target !== target) continue;
+    if (change.type === "base") continue; // rank — never converted
+    if (change.flavor === abilityLabel && change.formula === abilityFormula) continue; // ability mod
+    if (change.formula === ACP_FORMULA) continue; // Armor Check Penalty — a penalty, not a bonus
+
+    const value = RollPF.safeRollSync(String(change.formula), rollData).total ?? 0;
+    if (value <= 0) continue; // only BONUSES convert — zero/negative contributors are left alone
+
+    included.push(change);
+    if (STACKING_TYPES.has(change.type)) {
+      total += value;
+    } else {
+      const current = highestByType.get(change.type) ?? -Infinity;
+      if (value > current) highestByType.set(change.type, value);
+    }
+  }
+
+  for (const value of highestByType.values()) total += value;
+  return { total, included };
+}
+
+/**
+ * pf1 also lets a Change target ALL skills at once (`target: "skills"`,
+ * plural) — the same mechanism its own native "Wound Threshold"/
+ * "Negative Levels" penalties use, and a real-world reproduction bug
+ * (session of 2026-09-09: a Buff with a flat `target: "skills"` bonus
+ * kept applying on top of the flat conversion instead of being folded
+ * into it) confirmed live that `collectSkillBonusChanges`'s per-skill
+ * `target === "skill.~<id>"` match silently ignores it entirely.
+ *
+ * A single shared global Change can't be suppressed the same way a
+ * per-skill one is: deleting it once (to convert it for skill A) would
+ * remove it from every OTHER skill's total too, even skills whose own
+ * total the global's removal was never evaluated against. So before the
+ * per-skill pass runs, "unroll" every `target: "skills"` Change in the
+ * array into one independent clone per skill, each retargeted to
+ * `skill.~<id>` — then each skill's own clone can be converted or left
+ * alone entirely independently, using the exact same per-skill logic
+ * already built for genuinely skill-specific Changes. This mirrors how
+ * pf1's own `sourceInfo` already displays a "Wound Threshold" line
+ * separately under every individual skill from that one shared Change,
+ * just materialized as real distinct objects instead of one shared
+ * reference evaluated N times for display.
+ *
+ * @param {pf1.documents.ActorPF} actor
+ * @param {pf1.components.ItemChange[]} changes
+ */
+function unrollGlobalSkillChanges(actor, changes) {
+  const skillIds = Object.keys(actor.system.skills ?? {});
+  if (!skillIds.length) return;
+
+  for (let i = changes.length - 1; i >= 0; i--) {
+    const change = changes[i];
+    if (change.target !== "skills") continue;
+
+    changes.splice(i, 1);
+    for (const skillId of skillIds) {
+      changes.push(
+        new pf1.components.ItemChange({
+          formula: change.formula,
+          operator: change.operator ?? "add",
+          target: `skill.~${skillId}`,
+          type: change.type,
+          flavor: change.flavor,
+        }),
+      );
+    }
+  }
+}
+
+/**
+ * §2.3 numeric half. Called from a `_prepareTypeChanges` wrap (see
+ * `registerSkillBonusSuppression` below and the file header for why —
+ * NOT from `pf1AddDefaultChanges` the way every other Elyndor Change is).
+ * `changes` here is the near-final array Changes get applied from, so
+ * splicing entries out of it (rather than `actor.changes`) actually
+ * suppresses them — never a cancelling negative Change, same rule this
+ * whole module follows.
+ *
+ * Also caches which skills currently qualify for Advantage directly on
+ * the actor instance (`actor._elyndorSkillAdvantage`, a plain expando
+ * property, recomputed every prepare pass — never a `flags` update, which
+ * would trigger a write/re-render loop from inside data prep) for
+ * `handlePreActorRollSkill` to read when a check is actually rolled.
+ *
+ * @param {pf1.documents.ActorPF} actor
+ * @param {pf1.components.ItemChange[]} changes
+ */
+export function applySkillBonusConversion(actor, changes) {
+  if (!actor?.system?.skills || !Array.isArray(changes)) return;
+
+  unrollGlobalSkillChanges(actor, changes);
+
+  const rollData = actor.getRollData();
+  const advantageSkills = new Set();
+
+  for (const [skillId, skill] of Object.entries(actor.system.skills)) {
+    const { total, included } = collectSkillBonusChanges(changes, skillId, skill.ability, rollData);
+    if (total < 2) continue; // below the table's lowest tier — native bonus(es), if any, stay untouched
+
+    const { flat, advantage } = convertSkillBonus(total);
+
+    for (const change of included) {
+      const idx = changes.indexOf(change);
+      if (idx >= 0) changes.splice(idx, 1);
+    }
+
+    if (flat) {
+      changes.push(
+        new pf1.components.ItemChange({
+          formula: flat,
+          operator: "add",
+          target: `skill.~${skillId}`,
+          type: "untyped",
+          flavor: game.i18n?.localize?.("ELYNDOR.SkillBonusConversion") ?? "Skill Bonus Conversion (Elyndor)",
+        }),
+      );
+    }
+
+    if (advantage) advantageSkills.add(skillId);
+  }
+
+  actor._elyndorSkillAdvantage = advantageSkills;
+}
+
+/**
+ * Wrap `_prepareTypeChanges` (same method as `saves-bab-lag.mjs`'s
+ * `registerSecondaryBabSuppression`; `wrapOwnAfter` composes cleanly
+ * across multiple callers, so both run in registration order) so
+ * `applySkillBonusConversion` sees the near-final Changes array instead
+ * of the pre-rebuild snapshot `pf1AddDefaultChanges` would hand it.
+ *
+ * MUST be called from `Hooks.once("init")`, NOT `"setup"` — the opposite
+ * of this module's usual rule (`registerSkillRankSuppression`/
+ * `registerPointBuyTier` genuinely need "setup", since they read
+ * `pf1.config`/`pf1.applications`, which aren't populated until pf1's own
+ * "init" has run). This function only touches `CONFIG.Actor.*`, a
+ * Foundry-core namespace available even at "init" (proven by
+ * `registerSecondaryBabSuppression` already registering successfully
+ * there). Registering this specific wrap late, from "setup", was tried
+ * first and looked correct in every manual test — but verified live
+ * (session of 2026-09-09) to silently never take effect in normal play:
+ * `_prepareTypeChanges` is NOT part of the regular per-render prepare
+ * cycle — for a given actor it effectively runs once, very early
+ * (already-observed to run in this window before "setup" fires — see
+ * `registerSecondaryBabSuppression`'s own `_prepareTypeChanges` wrap,
+ * registered at "init", correctly reflecting its `pickHighestClassSaves`
+ * logic on a cold load), and its result is then cached; neither a fresh
+ * page load nor opening the actor sheet re-triggers it afterward, only
+ * an explicit `actor.reset()+prepareData()`. A "setup"-registered wrap
+ * therefore installed itself only *after* that one early call had
+ * already happened and been cached — every skill bonus kept applying at
+ * its raw, unconverted value in real play despite every manual
+ * re-verification (which always forced a fresh recompute) showing it
+ * working. Moving this call to "init" (ahead of that early invocation)
+ * is the fix; see `module.mjs`'s own comment at the call site for the
+ * full incident writeup.
+ */
+export function registerSkillBonusSuppression() {
+  const Character = CONFIG.Actor.documentClasses?.character;
+  if (Character?.prototype) {
+    wrapOwnAfter(Character.prototype, "_prepareTypeChanges", function (changes) {
+      applySkillBonusConversion(this, changes);
+    });
+  }
+
+  // RefCode / TypeDataModel path (not used by the installed v11.11 build,
+  // but the same house rule if the world is ever upgraded) — mirrors
+  // saves-bab-lag.mjs's own dual registration for the same reason.
+  const CharacterModel = CONFIG.Actor.dataModels?.character;
+  if (CharacterModel?.prototype) {
+    wrapOwnAfter(CharacterModel.prototype, "_prepareChanges", function (changes) {
+      applySkillBonusConversion(this.parent, changes);
+    });
+  }
+}
+
+/**
+ * `pf1PreActorRollSkill(actor, rollOptions, skillId)` — tags the shared
+ * options object (see file header for the object-identity verification)
+ * so `handlePreD20Roll` below knows whether this roll earned Advantage,
+ * without needing `skillId` itself (the d20 hook never receives it).
+ *
+ * @param {pf1.documents.ActorPF} actor
+ * @param {object} rollOptions
+ * @param {string} skillId
+ */
+export function handlePreActorRollSkill(actor, rollOptions, skillId) {
+  if (!rollOptions) return;
+  rollOptions.__elyndorAdvantage = actor?._elyndorSkillAdvantage?.has(skillId) ?? false;
+}
+
+/**
+ * `pf1PreD20Roll(roll, options)` — if the shared options object was
+ * tagged above, mutate the still-unevaluated roll's sole `Die` term into
+ * 2d20-keep-highest before it evaluates. `resetFormula()` is required:
+ * without it the roll evaluates correctly but the chat card's serialized
+ * formula stays stale at "1d20" (verified live).
+ *
+ * @param {Roll} roll
+ * @param {object} options
+ */
+export function handlePreD20Roll(roll, options) {
+  if (!options?.__elyndorAdvantage) return;
+  delete options.__elyndorAdvantage; // one-shot — this object isn't reused across separate rolls, but be defensive
+  if (roll._evaluated) return; // too late to mutate safely; nothing we can do at this point
+  const die = roll.terms?.[0];
+  if (!die || die.faces !== 20) return; // only ever touch the actual d20 term
+  die.number = 2;
+  die.modifiers = [...new Set([...(die.modifiers ?? []), "kh1"])];
+  roll.resetFormula?.();
+}
