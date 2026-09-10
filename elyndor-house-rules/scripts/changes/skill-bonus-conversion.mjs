@@ -88,9 +88,23 @@
  * roll (verified live: chat payload formula `"2d20kh1"`, two real die
  * results, the losing one flagged `discarded`).
  *
+ * `handlePreD20Roll` also folds the roll dialog's own "Situational Bonus"
+ * field into the same conversion — a real user report (session of
+ * 2026-09-09) caught a plain "+5" typed there applying as a raw,
+ * unconverted modifier, bypassing §2.3 entirely. Only a flat numeric
+ * situational entry is folded (recombined with the skill's cached
+ * persistent total and reconverted for that roll only, never written
+ * back to the sheet); a dice-based one (the field also accepts formulas
+ * like `1d6[Inspiration] + 2[Aid] + 1`) is left untouched, since there's
+ * nothing to statically convert before the dice are rolled. See
+ * `foldSituationalBonus`'s own header for the exact detection mechanism.
+ *
  * NOT YET HANDLED: subskills (Craft/Profession/Perform instances) use a
  * different Change-target shape than the fixed base-skill list this file
- * walks (`skill.~<id>`) — unverified, skipped silently for now. See the
+ * walks (`skill.~<id>`) — unverified, skipped silently for now. A
+ * situational bonus that itself uses `[Bracket]` flavor syntax (rather
+ * than a bare number) also won't be detected — its flavored parts look
+ * identical to a real tracked Change once built into the roll. See the
  * module README's Known risks once this is exercised end-to-end.
  */
 import { wrapOwnAfter } from "../lib/wrap.mjs";
@@ -123,6 +137,14 @@ function convertSkillBonus(total) {
   if (total >= 6) return { flat: 0, advantage: true };
   if (total >= 2) return { flat: 2, advantage: false };
   return { flat: 0, advantage: false };
+}
+
+/** Shared flavor label for the flat replacement Change/roll term, both
+ *  the persistent sheet Change (`applySkillBonusConversion`) and the
+ *  roll-time recombination (`handlePreD20Roll`) — computed each call
+ *  since `game.i18n` isn't guaranteed ready at module-load time. */
+function conversionFlavor() {
+  return game.i18n?.localize?.("ELYNDOR.SkillBonusConversion") ?? "Skill Bonus Conversion (Elyndor)";
 }
 
 /**
@@ -243,9 +265,22 @@ export function applySkillBonusConversion(actor, changes) {
 
   const rollData = actor.getRollData();
   const advantageSkills = new Set();
+  const bonusTotals = new Map();
+  const bonusFlavors = new Map();
 
   for (const [skillId, skill] of Object.entries(actor.system.skills)) {
     const { total, included } = collectSkillBonusChanges(changes, skillId, skill.ability, rollData);
+    // Cached for EVERY skill, not just ones that convert — a below-floor
+    // total (e.g. a single +1 trait bonus) still needs to be known at
+    // roll time, since a situational bonus typed into the roll dialog
+    // can push the combined total over the floor (see handlePreD20Roll).
+    // The flavor set is cached too, for the same reason: when that
+    // happens, the raw terms these `included` Changes already contributed
+    // to the roll (e.g. "RadicalTestBuff") need to be identified and
+    // stripped, not just the stale flat term — otherwise they'd double
+    // up with the freshly recomputed combined total.
+    bonusTotals.set(skillId, total);
+    bonusFlavors.set(skillId, new Set(included.map((c) => c.flavor).filter(Boolean)));
     if (total < 2) continue; // below the table's lowest tier — native bonus(es), if any, stay untouched
 
     const { flat, advantage } = convertSkillBonus(total);
@@ -262,7 +297,7 @@ export function applySkillBonusConversion(actor, changes) {
           operator: "add",
           target: `skill.~${skillId}`,
           type: "untyped",
-          flavor: game.i18n?.localize?.("ELYNDOR.SkillBonusConversion") ?? "Skill Bonus Conversion (Elyndor)",
+          flavor: conversionFlavor(),
         }),
       );
     }
@@ -271,6 +306,8 @@ export function applySkillBonusConversion(actor, changes) {
   }
 
   actor._elyndorSkillAdvantage = advantageSkills;
+  actor._elyndorSkillBonusTotals = bonusTotals;
+  actor._elyndorSkillBonusFlavors = bonusFlavors;
 }
 
 /**
@@ -328,8 +365,11 @@ export function registerSkillBonusSuppression() {
 /**
  * `pf1PreActorRollSkill(actor, rollOptions, skillId)` — tags the shared
  * options object (see file header for the object-identity verification)
- * so `handlePreD20Roll` below knows whether this roll earned Advantage,
- * without needing `skillId` itself (the d20 hook never receives it).
+ * with this skill's cached persistent bonus total AND the flavor labels
+ * that total was built from, so `handlePreD20Roll` below can re-run the
+ * conversion at roll time (see its own header for why a plain boolean
+ * isn't enough) without needing `skillId` itself (the d20 hook never
+ * receives it).
  *
  * @param {pf1.documents.ActorPF} actor
  * @param {object} rollOptions
@@ -337,26 +377,141 @@ export function registerSkillBonusSuppression() {
  */
 export function handlePreActorRollSkill(actor, rollOptions, skillId) {
   if (!rollOptions) return;
-  rollOptions.__elyndorAdvantage = actor?._elyndorSkillAdvantage?.has(skillId) ?? false;
+  rollOptions.__elyndorBaseTotal = actor?._elyndorSkillBonusTotals?.get(skillId) ?? 0;
+  rollOptions.__elyndorBonusFlavors = [...(actor?._elyndorSkillBonusFlavors?.get(skillId) ?? [])];
 }
 
 /**
  * `pf1PreD20Roll(roll, options)` — if the shared options object was
- * tagged above, mutate the still-unevaluated roll's sole `Die` term into
- * 2d20-keep-highest before it evaluates. `resetFormula()` is required:
- * without it the roll evaluates correctly but the chat card's serialized
- * formula stays stale at "1d20" (verified live).
+ * tagged above, this does two things:
+ *
+ * 1. Mutates the still-unevaluated roll's sole `Die` term into
+ *    2d20-keep-highest when the (possibly roll-time-recombined, see
+ *    below) total earns Advantage. `resetFormula()` is required:
+ *    without it the roll evaluates correctly but the chat card's
+ *    serialized formula stays stale at "1d20" (verified live).
+ *
+ * 2. FOLDS the roll dialog's own "Situational Bonus" field into the same
+ *    §2.3 conversion, live-verified against a real user report (session
+ *    of 2026-09-09): typing e.g. "+5" into that field applied it as a
+ *    raw, unconverted modifier, completely bypassing the house rule —
+ *    exactly the "add instead of modify" bug reported. Verified live via
+ *    real dialog interaction that pf1 builds the roll's terms as
+ *    `[Die, Op, Num(2,"Charisma"), Op, Num(1,"RadicalTestBuff"), Op,
+ *    Num(7, no flavor)]` — every tracked contributor (from
+ *    `options.parts`, itself built from `actor.changes`) always carries
+ *    a non-empty `flavor`, while the dialog's situational input is
+ *    appended as a SEPARATE, unflavored term, entirely outside
+ *    `options.parts`. That's the one reliable signal available to find
+ *    it: scan the terms after the base die for unflavored `NumericTerm`s
+ *    and sum them (see `recombineSkillRoll`).
+ *
+ *    Only a plain numeric situational bonus is folded — the field also
+ *    accepts arbitrary dice formulas with their own `[Bracket]` flavors
+ *    (per its own placeholder, `1d6[Inspiration] + 2[Aid] + 1`), which
+ *    can't be run through a static conversion table (nothing to convert
+ *    before the dice are rolled) and would be indistinguishable from a
+ *    real tracked contributor once flavored. If any dice term is found
+ *    among the unflavored candidates, or the flat sum isn't strictly
+ *    positive (matching this rule's own "only bonuses convert" rule for
+ *    persistent Changes — see the file header), nothing is folded and
+ *    the roll is left exactly as pf1 built it.
  *
  * @param {Roll} roll
  * @param {object} options
  */
 export function handlePreD20Roll(roll, options) {
-  if (!options?.__elyndorAdvantage) return;
-  delete options.__elyndorAdvantage; // one-shot — this object isn't reused across separate rolls, but be defensive
+  if (!options || typeof options.__elyndorBaseTotal !== "number") return;
+  const baseTotal = options.__elyndorBaseTotal;
+  const bonusFlavors = new Set(options.__elyndorBonusFlavors ?? []);
+  delete options.__elyndorBaseTotal; // one-shot — this object isn't reused across separate rolls, but be defensive
+  delete options.__elyndorBonusFlavors;
   if (roll._evaluated) return; // too late to mutate safely; nothing we can do at this point
   const die = roll.terms?.[0];
   if (!die || die.faces !== 20) return; // only ever touch the actual d20 term
-  die.number = 2;
-  die.modifiers = [...new Set([...(die.modifiers ?? []), "kh1"])];
-  roll.resetFormula?.();
+
+  const folded = recombineSkillRoll(roll, baseTotal, bonusFlavors);
+  const advantage = folded ? folded.advantage : convertSkillBonus(baseTotal).advantage;
+
+  if (folded) roll.resetFormula?.();
+
+  if (advantage) {
+    die.number = 2;
+    die.modifiers = [...new Set([...(die.modifiers ?? []), "kh1"])];
+    roll.resetFormula?.();
+  }
+}
+
+/**
+ * Scans `roll.terms` after the base die for a plain numeric situational
+ * addition (see `handlePreD20Roll`'s header for the detection rule), and
+ * if one is found, REBUILDS `roll.terms` in place: every term whose
+ * flavor is in `bonusFlavors` (this skill's persistent §2.3 contributors)
+ * or is the flat conversion term itself is dropped — not just the flat
+ * term — since all of it is superseded by reconverting the combined
+ * total; ability-mod/ACP/anything else keeps its own term untouched; the
+ * raw situational term(s) are dropped too; and one fresh flat term is
+ * appended if the combined total earns one.
+ *
+ * A full rebuild (rather than splicing indices in place) sidesteps index
+ * shifting entirely, and was the fix for a real bug caught live (session
+ * of 2026-09-09): an earlier version only stripped the flat conversion
+ * term, so a persistent contributor that was itself still raw (its own
+ * total alone below the table's floor, e.g. a global +1 buff) survived
+ * as a leftover term and double-counted alongside the freshly-added flat
+ * bonus once a situational addition pushed the combined total over the
+ * floor. Confirmed fixed live: `RadicalTestBuff`'s raw `+1` term no
+ * longer survives when a situational bonus triggers recombination.
+ *
+ * @param {Roll} roll
+ * @param {number} baseTotal
+ * @param {Set<string>} bonusFlavors
+ * @returns {{advantage: boolean} | null} `null` when there's nothing
+ *   safe to fold (no unflavored terms, a dice term among them, or their
+ *   sum isn't strictly positive) — `roll.terms` is left untouched.
+ */
+function recombineSkillRoll(roll, baseTotal, bonusFlavors) {
+  const die = roll.terms[0];
+  const pairs = [];
+  for (let i = 1; i < roll.terms.length; i += 2) {
+    const op = roll.terms[i];
+    const term = roll.terms[i + 1];
+    if (!term) break;
+    pairs.push({ op, term });
+  }
+
+  let situationalTotal = 0;
+  let hasDice = false;
+  const kept = [];
+
+  for (const { op, term } of pairs) {
+    if (term instanceof foundry.dice.terms.DiceTerm) {
+      hasDice = true; // a dice-based situational bonus — can't statically convert, bail entirely below
+      continue;
+    }
+    const flavor = term.options?.flavor || term.flavor;
+    if (!flavor) {
+      // Unflavored numeric — the dialog's situational input (see header).
+      if (typeof term.number === "number") {
+        situationalTotal += (op?.operator === "-" ? -1 : 1) * term.number;
+      }
+      continue;
+    }
+    if (bonusFlavors.has(flavor) || flavor === conversionFlavor()) continue; // superseded by the recombined total
+    kept.push({ op, term }); // ability mod, ACP, anything else this rule doesn't touch
+  }
+
+  if (hasDice || situationalTotal <= 0) return null;
+
+  const { flat, advantage } = convertSkillBonus(baseTotal + situationalTotal);
+  const newTerms = [die];
+  for (const { op, term } of kept) newTerms.push(op, term);
+  if (flat) {
+    newTerms.push(
+      new foundry.dice.terms.OperatorTerm({ operator: "+" }),
+      new foundry.dice.terms.NumericTerm({ number: flat, options: { flavor: conversionFlavor() } }),
+    );
+  }
+  roll.terms = newTerms;
+  return { advantage };
 }

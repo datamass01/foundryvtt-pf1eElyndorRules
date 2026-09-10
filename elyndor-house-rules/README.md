@@ -361,6 +361,57 @@ satisfied by vanilla pf1 — confirm with the GM before authoring a duplicate.
        any item create/delete before checking can mask exactly this class
        of registration-timing bug.
 
+8. **RESOLVED (verified live) — the roll dialog's own "Situational Bonus"
+   field bypassed §2.3 entirely.** A second real user bug report (session
+   of 2026-09-09, same day as #7): typing a plain "+5" into the Roll Skill
+   Check dialog's "Situational Bonus" field applied it as a raw,
+   unconverted modifier — every persistent Change was suppressed and
+   converted correctly, but this one roll-time input path was never
+   touched by any of it. Root cause: that field's value never becomes a
+   Change at all — it's appended directly to the roll's own term list,
+   entirely outside `actor.changes`/`_prepareTypeChanges` (confirmed live:
+   `options.parts`, the same array every tracked persistent contributor
+   flows through, never contains it). Fixed in `handlePreD20Roll`: every
+   tracked contributor's `NumericTerm` always carries a non-empty
+   `flavor` (verified live across every skill/Change combination this
+   module has ever tested), so an *unflavored* numeric term is the one
+   reliable signal a term came from the dialog instead. When found, its
+   value is combined with the skill's cached persistent total (now cached
+   per-skill on the actor alongside the existing Advantage set) and the
+   whole thing is reconverted for that roll only — never written back to
+   the sheet.
+   - **A second, sharper bug was caught during THIS fix's own
+     verification** (not a leftover from #7): the first version of the
+     roll-time fold only stripped a *stale flat conversion term* before
+     inserting the freshly-recomputed one — it left any *raw, still-
+     unconverted* persistent contributor (e.g. a global buff whose
+     persistent total alone was below the table's floor) sitting in the
+     roll, where it then double-counted alongside the newly-added flat
+     bonus once the situational addition pushed the combined total over
+     the floor. Live-caught via the exact repro: Acrobatics with a
+     persisted `RadicalTestBuff` (+1, below floor, so applying raw) plus
+     a `+12` situational bonus produced `1d20 + 1[Dexterity] +
+     1[RadicalTestBuff] + 2[Skill Bonus Conversion (Elyndor)]` — the
+     `RadicalTestBuff` term should not have survived. Fixed by rebuilding
+     `roll.terms` from scratch on every fold (`recombineSkillRoll`)
+     instead of splicing specific indices: every term whose flavor is one
+     of the skill's own cached §2.3-relevant flavors (not just the flat
+     conversion term) is dropped, alongside the raw situational term(s),
+     before the fresh flat term (if any) is appended. Re-verified live
+     after this fix: same repro now correctly produces `2d20kh1 +
+     1[Dexterity] + 2[Skill Bonus Conversion (Elyndor)]`, total 16, no
+     leftover `RadicalTestBuff` line.
+   - Also verified live in the same pass: a plain roll with no situational
+     input is completely unaffected (byte-identical formula to before this
+     fix existed); a dice-based situational bonus (e.g. `1d6`, which the
+     field's own placeholder documents as supported) is left completely
+     untouched rather than mishandled — there's nothing to statically
+     convert before dice are rolled, and a flavored sub-part of a mixed
+     formula (`2[Aid]`) would be indistinguishable from a real tracked
+     Change, so this is an explicit, documented scope boundary rather
+     than a gap: only a bare, dice-free numeric situational entry folds
+     into the conversion.
+
 ## Dev setup
 
 Per `RefCode/docs/other/MODULE_DEV.md`: symlink the `pf1` system repo
