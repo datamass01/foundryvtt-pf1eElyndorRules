@@ -52,6 +52,6 @@
     }
   ],
   "url": "https://github.com/datamass01/foundryvtt-pf1eElyndorRules",
-  "manifest": "https://github.com/datamass01/foundryvtt-pf1eElyndorRules/releases/latest/download/module.json",
+  "manifest": "https://raw.githubusercontent.com/datamass01/foundryvtt-pf1eElyndorRules/main/elyndor-house-rules/module.json",
   "download": "https://github.com/datamass01/foundryvtt-pf1eElyndorRules/releases/latest/download/elyndor-house-rules.zip"
 }
