@@ -16,6 +16,7 @@
  */
 import { MODULE_ID } from "../scripts/const.mjs";
 import { setClassRole } from "../scripts/class-roles.mjs";
+import { totalSkillPointsPerLevel } from "../scripts/lib/formulas.mjs";
 
 /** Create a throwaway PC actor for testing. */
 async function createTestActor() {
@@ -103,6 +104,40 @@ export function registerDualClassTests() {
           // getFeatCount() above) is only correct because this holds.
           expect(actor.system.attributes.hd.total).to.equal(5);
           expect(actor.system.details.level.value).to.equal(5);
+        });
+      });
+
+      describe("Single-class actor (race-locked build, no Secondary, no role assigned)", () => {
+        // Some Elyndor races grant everything from one class outright, so
+        // the character never goes through the Primary/Secondary toggle at
+        // all — getPrimaryClass() must still resolve this sole class item
+        // as Primary (class-roles.mjs) so §2.2 skill points and §4.1 feat
+        // count apply instead of silently falling back to core pf1 math.
+        /** @type {pf1.documents.ActorPF} */
+        let actor;
+        let rogue;
+
+        before(async () => {
+          actor = await createTestActor();
+          // Rogue's skillsPerLevel (8) deliberately differs from the
+          // Elyndor flat pool (2) so a fresh (all mod-0) actor's native-pf1
+          // total (max(1, 8+0)*5 = 40) and Elyndor total (2*5 = 10) can't
+          // coincidentally match — unlike e.g. Fighter (2), which would.
+          rogue = await addCoreClass(actor, "Rogue");
+          await rogue.update({ "system.level": 5 });
+          // Deliberately no setClassRole() call here.
+        });
+
+        after(async () => {
+          await actor.delete();
+        });
+
+        it("feat count is still 1 per character level", () => {
+          expect(actor.getFeatCount().max).to.equal(5);
+        });
+
+        it("skill ranks come from the §2.2 ability-pool total, not pf1's native per-class formula", () => {
+          expect(actor.system.details.skills.bonus).to.equal(totalSkillPointsPerLevel(actor) * 5);
         });
       });
 

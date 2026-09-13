@@ -412,6 +412,27 @@ satisfied by vanilla pf1 — confirm with the GM before authoring a duplicate.
      than a gap: only a bare, dice-free numeric situational entry folds
      into the conversion.
 
+9. **FIXED (not yet live-verified) — single-class actors (e.g. a race that
+   locks in one class outright) got vanilla pf1 skill points instead of
+   §2.2's ability-pool formula.** `applySkillPointsChange` and
+   `suppressNativeClassSkillRanks` (`changes/skill-points-total.mjs`) both
+   required a Primary *and* a Secondary class role to be assigned before
+   doing anything; a character with only one class item never goes through
+   the Primary/Secondary toggle at all (there's no choice to make), so both
+   functions silently no-op'd — the six-pool bonus was never added, and
+   pf1's native per-class `(skillsPerLevel + intMod) × HD` formula was never
+   suppressed either. `getPrimaryClass()` (`class-roles.mjs`) now falls back
+   to treating an actor's sole, unflagged class item as Primary; Secondary
+   is now optional (not required) in both functions above, so a single-class
+   actor gets the §2.2 formula same as a dual-class one. This also fixes
+   `feats.mjs`'s §4.1 feat-count rule for the same actors, which only ever
+   needed Primary and inherits the same fallback. A Quench test case
+   (`test/dual-class.test.mjs`, "Single-class actor") covers this but has
+   not been run live — **Test**: build a single-class test actor (no role
+   toggled), confirm the Skills tab's "Skill Ranks" total matches the §2.2
+   pool sum (not the core class-skill-points formula) and feat count is
+   1/character-level.
+
 ## Dev setup
 
 Per `RefCode/docs/other/MODULE_DEV.md`: symlink the `pf1` system repo
