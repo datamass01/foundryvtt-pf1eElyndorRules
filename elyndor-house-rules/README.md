@@ -139,7 +139,7 @@ below for what's still open.
 | Run feat +5 ft. | `packs-source/elyndor-feats/run.eLyRunFeat0001aa.yaml` |
 | Versatile Channeler (Elyndor): drops the original (Ultimate Magic) neutral-alignment prerequisite — good and evil channelers may take it too | `packs-source/elyndor-feats/versatile-channeler.eLyVersaChan0001.yaml` |
 | Vindicator's Stability (Elyndor, new feat, no published source): Antipaladin + Versatile Channeler (Elyndor) prereqs; lets touch of corruption also be used exactly as a paladin's lay on hands (heal a living creature, not just harm/heal-undead), same daily use pool | `packs-source/elyndor-feats/vindicators-stability.eLyVindicStab001.yaml` |
-| Skill Bonus Conversion (§2.3): non-rank/non-ability skill bonuses summed and converted — 2-5 → +2, 6-10 → Advantage (2d20kh1), 11+ → both | `scripts/changes/skill-bonus-conversion.mjs` |
+| Skill Bonus Conversion (§2.3): non-rank/non-ability/non-class-skill skill bonuses summed and converted — 2-5 → +2, 6-10 → Advantage (2d20kh1), 11+ → both | `scripts/changes/skill-bonus-conversion.mjs` |
 | Quench test scaffold | `test/dual-class.test.mjs` |
 
 **Note:** `packs-source/` holds the human-edited yaml source (renamed here
@@ -432,6 +432,53 @@ satisfied by vanilla pf1 — confirm with the GM before authoring a duplicate.
    toggled), confirm the Skills tab's "Skill Ranks" total matches the §2.2
    pool sum (not the core class-skill-points formula) and feat count is
    1/character-level.
+
+10. **RESOLVED (verified live) — the class-skill trained +3 is now
+    excluded from §2.3's Skill Bonus Conversion.** The original
+    2026-09-09 decision (see item 7 above and the house-rules doc's §2.3)
+    folded the class-skill bonus into the convertible total; a user
+    report on 2026-09-12 identified this as wrong, and the doc's
+    resolution note was amended to carve it out — the class-skill +3 now
+    always applies as a plain, unconverted bonus, same as rank and the
+    ability modifier, and only bonuses on top of it feed the conversion
+    table. `collectSkillBonusChanges` (`changes/skill-bonus-conversion.mjs`)
+    skips pf1's own class-skill Change via a new `isClassSkillChange`
+    check (matched by `type: "untyped"`, flavor
+    `game.i18n.localize("PF1.CSTooltip")`, and `formula`/`value` equal to
+    `pf1.config.classSkillBonus`). This invalidates the first bullet of
+    item 7's verification log above (the "+3 Class Skill bonus converts
+    to a flat +2" result) — that bullet describes the *previous*,
+    now-reversed behavior.
+    Live-verified 2026-09-12 against the `pf1e-test-bed` world, all on
+    cloned (never persisted) copies of the Fighter+Sorc test actor's
+    Bluff skill (1 rank, class skill, Charisma-based) with the leftover
+    global `RadicalTestBuff` item stripped from the clone for a clean
+    baseline:
+    - Class skill +3 alone, no other bonus: `mod` = 6 (1 rank + 2 Cha + 3
+      Class Skill), sourceInfo keeps a plain "Class Skill" +3 line, no
+      conversion line — the class-skill bonus is correctly left alone
+      below the table's floor.
+    - Class skill +3 plus a +4 competence bonus (other-bonus total 4,
+      tier 2-5): `mod` = 8 (1 + 2 + 3 + 2), sourceInfo shows "Class
+      Skill" +3 **and** "Skill Bonus Conversion (Elyndor)" +2 as separate
+      lines, no leftover competence line — confirms the class skill and
+      the converted flat bonus coexist without double-counting.
+    - Class skill +3 plus a +8 competence bonus (other-bonus total 8,
+      tier 6-10, Advantage only): `mod` stays 6 (no flat added), and a
+      real `actor.rollSkill("blf", {skipDialog: true})` produced formula
+      `2d20kh1 + 1[Skill Ranks] + 3[Class Skill] + 2[Charisma]` (total
+      17: die roll 11 kept, 8 discarded) — Class Skill still its own
+      untouched term, no "Skill Bonus Conversion" term, matching the
+      no-flat expectation for this tier.
+    - Class skill +3 plus a +11 insight bonus (other-bonus total 11, tier
+      11+, both benefits): `mod` = 8, and a real roll produced formula
+      `2d20kh1 + 1[Skill Ranks] + 3[Class Skill] + 2[Charisma] +
+      2[Skill Bonus Conversion (Elyndor)]` (total 26: both dice rolled
+      18, one discarded) — Class Skill and the flat conversion both
+      present as separate lines, correctly combined with Advantage.
+    - The persisted actor itself was left untouched throughout (all
+      mutations applied to `.clone()` copies only) — confirmed after the
+      fact: Bluff rank still 0, `RadicalTestBuff` item still present.
 
 ## Dev setup
 

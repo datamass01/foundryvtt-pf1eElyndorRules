@@ -2,15 +2,23 @@
  * §2.3 — Skill Bonus Conversion (Non-Ability Modifiers).
  *
  * Rule (Docs/house-rules/character-creation-and-system-rules.md §2.3):
- * ranks and the ability modifier apply to a skill normally; every OTHER
- * bonus a character would get from class benefits, feats, magic items, or
- * other sources is instead summed (per standard Pathfinder stacking
- * rules) and converted through one table instead of applying directly:
+ * ranks, the ability modifier, AND the standard class-skill trained +3
+ * all apply to a skill normally; every OTHER bonus a character would get
+ * from class benefits, feats, magic items, or other sources is instead
+ * summed (per standard Pathfinder stacking rules) and converted through
+ * one table instead of applying directly:
  *   2-5  -> +2 Skill Bonus
  *   6-10 -> Advantage (roll 2d20, keep the higher result)
  *   11+  -> +2 Skill Bonus & Advantage
  * A total of 0-1 falls below the lowest tier and is left alone entirely
  * (e.g. a single +1 trait bonus keeps applying as a plain +1).
+ *
+ * AMENDED 2026-09-12: the class-skill trained +3 was originally folded
+ * into the convertible total (2026-09-09 decision) but that was reversed
+ * — it's now excluded and always applies as a plain +3, same as rank and
+ * the ability modifier. See `isClassSkillChange` below for the exact
+ * Change shape this is detected by, verified against the installed pf1
+ * v11.11 bundle's `_prepareClassSkills`/`addSKillChanges`.
  *
  * Two independent mechanisms, both live-verified against the installed
  * pf1 v11.11 build before this file was written — see the plan's "Phase 8
@@ -127,6 +135,32 @@ const STACKING_TYPES = new Set(["untyped", "circumstance", "dodge"]);
 const ACP_FORMULA = "-@attributes.acp.skill";
 
 /**
+ * The standard class-skill trained +3, excluded from §2.3's convertible
+ * total per the house-rules doc's 2026-09-12 amendment (see file header)
+ * — it applies as a plain, unconverted bonus, same as rank/ability mod.
+ *
+ * Verified live against the installed pf1 v11.11 bundle's
+ * `_prepareClassSkills`/`addSKillChanges`: this Change is only pushed
+ * when the skill has at least 1 rank, as `type: "untyped"`, `formula`/
+ * `value` equal to `pf1.config.classSkillBonus` (3), flavor
+ * `game.i18n.localize("PF1.CSTooltip")` ("Class Skill"). Checked by
+ * flavor + formula together, the same pattern this file already uses for
+ * the ability-mod Change, since neither alone is a safe-enough signal
+ * (flavor is localized text; a coincidental untyped +3 from elsewhere
+ * would match the formula alone).
+ *
+ * @param {pf1.components.ItemChange} change
+ * @returns {boolean}
+ */
+function isClassSkillChange(change) {
+  return (
+    change.type === "untyped" &&
+    change.flavor === game.i18n.localize("PF1.CSTooltip") &&
+    Number(change.formula) === pf1.config.classSkillBonus
+  );
+}
+
+/**
  * §2.3's conversion table.
  *
  * @param {number} total
@@ -174,6 +208,7 @@ function collectSkillBonusChanges(changes, skillId, ability, rollData) {
     if (change.type === "base") continue; // rank — never converted
     if (change.flavor === abilityLabel && change.formula === abilityFormula) continue; // ability mod
     if (change.formula === ACP_FORMULA) continue; // Armor Check Penalty — a penalty, not a bonus
+    if (isClassSkillChange(change)) continue; // class-skill trained +3 — always plain, never converted
 
     const value = RollPF.safeRollSync(String(change.formula), rollData).total ?? 0;
     if (value <= 0) continue; // only BONUSES convert — zero/negative contributors are left alone
