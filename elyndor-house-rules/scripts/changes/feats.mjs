@@ -30,7 +30,7 @@ import { getPrimaryClass } from "../class-roles.mjs";
  */
 export function applyFeatCountChange(actor, changes) {
   const primary = getPrimaryClass(actor);
-  if (!primary) return; // Dual-class structure not set up yet on this actor.
+  if (!primary) return; // No class set up (or resolvable as Primary) yet on this actor.
 
   const characterLevel = primary.system.level ?? 0;
   const hdTotal = actor.system.attributes?.hd?.total ?? characterLevel;

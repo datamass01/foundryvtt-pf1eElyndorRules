@@ -70,9 +70,13 @@ import { wrapAfter } from "../lib/wrap.mjs";
  * @param {pf1.components.ItemChange[]} changes
  */
 export function applySkillPointsChange(actor, changes) {
+  // §2.2 replaces the core skill-point formula outright — it isn't
+  // conditioned on being dual-classed, so it applies for a single-class
+  // actor too (getPrimaryClass falls back to a sole untagged class item;
+  // see class-roles.mjs). Secondary is only consulted for the lockstep
+  // level math elsewhere in this module; it plays no part in this formula.
   const primary = getPrimaryClass(actor);
-  const secondary = getSecondaryClass(actor);
-  if (!primary || !secondary) return; // Dual-class structure not set up yet on this actor.
+  if (!primary) return; // No class set up (or resolvable as Primary) yet on this actor.
 
   const characterLevel = primary.system.level ?? 0;
 
@@ -113,10 +117,12 @@ export function applySkillPointsChange(actor, changes) {
  *
  * Unlike BAB (where only the Secondary class's contribution is zeroed),
  * §2.2 replaces the per-class formula entirely, so BOTH Primary's and
- * Secondary's native contributions are subtracted here — Favored Class
- * Bonus into skills is untouched (§2.2 doesn't replace it; it's kept as
- * its own unrestricted source, folded into the skill-pool panel's Generic
- * row via `favoredClassSkillBonus` for parity — see ui/skill-pool-panel.mjs).
+ * Secondary's native contributions are subtracted here (a single-class
+ * actor simply has no Secondary to subtract — see the `.filter(Boolean)`
+ * below) — Favored Class Bonus into skills is untouched (§2.2 doesn't
+ * replace it; it's kept as its own unrestricted source, folded into the
+ * skill-pool panel's Generic row via `favoredClassSkillBonus` for parity —
+ * see ui/skill-pool-panel.mjs).
  *
  * pf1's native formula lives directly inside the character sheet's
  * `_prepareSkills(context)` (not a Change, so nothing to filter out of
@@ -147,8 +153,8 @@ function suppressNativeClassSkillRanks(actor, context) {
   if (!skillRanks) return;
 
   const primary = getPrimaryClass(actor);
-  const secondary = getSecondaryClass(actor);
-  if (!primary || !secondary) return; // Dual-class structure not set up yet on this actor.
+  if (!primary) return; // No class set up (or resolvable as Primary) yet on this actor.
+  const secondary = getSecondaryClass(actor); // absent for a single-class actor — fine, see below.
 
   // Same isMindless/intMod derivation pf1's own `_prepareSkills` just used
   // on this same `context`, so the subtraction matches its addition exactly.
@@ -158,7 +164,7 @@ function suppressNativeClassSkillRanks(actor, context) {
   if (isMindless) return; // pf1 adds nothing but FCB for mindless creatures; nothing to subtract.
 
   let nativeContribution = 0;
-  for (const cls of [primary, secondary]) {
+  for (const cls of [primary, secondary].filter(Boolean)) {
     const hd = cls.system.hitDice;
     if (!hd) continue;
     const perLevel = cls.system.skillsPerLevel || 0;

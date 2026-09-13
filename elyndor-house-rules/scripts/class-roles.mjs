@@ -27,9 +27,24 @@ export function isSecondaryClass(item) {
   return getClassRole(item) === ROLE.SECONDARY;
 }
 
-/** @param {pf1.documents.ActorPF} actor */
+/**
+ * @param {pf1.documents.ActorPF} actor
+ * @returns {pf1.documents.ItemPF|null} The explicitly-flagged Primary class
+ *   item, or — for a genuinely single-class actor (e.g. a race that locks
+ *   in one class, so there's no Primary/Secondary choice to make and no
+ *   Secondary class item ever gets added) — that sole class item, treated
+ *   as Primary so §2.2 skill points / §4.1 feat count still apply instead
+ *   of silently falling back to core pf1 math. An actor with 2+ untagged
+ *   class items is a real dual-class case with roles simply not assigned
+ *   yet, and is deliberately NOT covered by this fallback (returns null,
+ *   same as before) — that one needs an explicit GM/player choice.
+ */
 export function getPrimaryClass(actor) {
-  return actor?.itemTypes?.class?.find((c) => isPrimaryClass(c)) ?? null;
+  const classes = actor?.itemTypes?.class ?? [];
+  const explicit = classes.find((c) => isPrimaryClass(c));
+  if (explicit) return explicit;
+  if (classes.length === 1 && !getClassRole(classes[0])) return classes[0];
+  return null;
 }
 
 /** @param {pf1.documents.ActorPF} actor */
